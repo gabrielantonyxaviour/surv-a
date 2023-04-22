@@ -1,101 +1,139 @@
+
+import Image from 'next/image'
 import Head from 'next/head'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
-import { AuthLayout } from '@/components/AuthLayout'
-import { Button } from '@/components/Button'
-import { SelectField, TextField } from '@/components/Fields'
+import backgroundImage from '../images/background-auth.jpg'
+import { useRef, useEffect, useState } from "react"
 import { Logo } from '@/components/Logo'
 
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
+import Loader from '@/components/Loader'
+
 export default function Register() {
+
+  const router = useRouter()
+  const emailRef = useRef()
+  const passwordRef = useRef()
+
+  const [loading, setLoading] = useState(true)
+  const supabase = useSupabaseClient()
+  const user = useUser()
+
+  useEffect(() => {
+    try {
+      if (user) {
+        router.push('/dashboard')
+      }
+    } catch (error) { } finally {
+      setLoading(false)
+    }
+  }, [user])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    await supabase.auth.signUp({
+      email: emailRef.current.value,
+      password: passwordRef.current.value
+    })
+    router.push('/login')
+  }
+
+  if (loading) return <Loader />
+
+
   return (
     <>
       <Head>
         <title>Sign Up - TaxPal</title>
       </Head>
-      <AuthLayout>
-        <div className="flex flex-col">
-          <Link href="/" aria-label="Home">
-            <Logo className="h-10 w-auto" />
-          </Link>
-          <div className="mt-20">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Get started for free
-            </h2>
-            <p className="mt-2 text-sm text-gray-700">
-              Already registered?{' '}
-              <Link
-                href="/login"
-                className="font-medium text-blue-600 hover:underline"
-              >
-                Sign in
-              </Link>{' '}
-              to your account.
-            </p>
+      <div className="flex min-h-full flex-1">
+        <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+          <div className="mx-auto w-full max-w-sm lg:w-96">
+            <Link href="/" aria-label="Home">
+              <Logo className="h-10 w-auto" />
+            </Link>
+            <div>
+
+              <div className="flex flex-col">
+
+                <div className="mt-20">
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    Get started for free
+                  </h2>
+                  <p className="mt-2 text-sm text-gray-700">
+                    Already registered?{' '}
+                    <Link
+                      href="/login"
+                      className="font-medium text-blue-600 hover:underline"
+                    >
+                      Sign in
+                    </Link>{' '}
+                    to your account.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-10">
+              <div>
+                <form action="#" method="POST" className="space-y-6">
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                      Email address
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        ref={emailRef}
+                        required
+                        className="block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                      Password
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        ref={passwordRef}
+                        required
+                        className="block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <button
+                      // type="submit"
+                      className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      onClick={handleSubmit}
+                    >
+                      Sign Up
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
           </div>
         </div>
-        <form
-          action="#"
-          className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2"
-        >
-          <TextField
-            label="First name"
-            id="first_name"
-            name="first_name"
-            type="text"
-            autoComplete="given-name"
-            required
+        <div className="relative hidden w-0 flex-1 lg:block">
+          <Image
+            className="absolute inset-0 h-full w-full object-cover"
+            src={backgroundImage}
+            alt=""
+            unoptimized
           />
-          <TextField
-            label="Last name"
-            id="last_name"
-            name="last_name"
-            type="text"
-            autoComplete="family-name"
-            required
-          />
-          <TextField
-            className="col-span-full"
-            label="Email address"
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-          />
-          <TextField
-            className="col-span-full"
-            label="Password"
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="new-password"
-            required
-          />
-          <SelectField
-            className="col-span-full"
-            label="How did you hear about us?"
-            id="referral_source"
-            name="referral_source"
-          >
-            <option>AltaVista search</option>
-            <option>Super Bowl commercial</option>
-            <option>Our route 34 city bus ad</option>
-            <option>The “Never Use This” podcast</option>
-          </SelectField>
-          <div className="col-span-full">
-            <Button
-              type="submit"
-              variant="solid"
-              color="blue"
-              className="w-full"
-            >
-              <span>
-                Sign up <span aria-hidden="true">&rarr;</span>
-              </span>
-            </Button>
-          </div>
-        </form>
-      </AuthLayout>
+        </div>
+      </div >
     </>
   )
 }

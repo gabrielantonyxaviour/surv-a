@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import { useState, useEffect } from 'react'
 
 import { CallToAction } from '@/components/CallToAction'
 import { Faqs } from '@/components/Faqs'
@@ -10,7 +11,30 @@ import { PrimaryFeatures } from '@/components/PrimaryFeatures'
 import { SecondaryFeatures } from '@/components/SecondaryFeatures'
 import { Testimonials } from '@/components/Testimonials'
 
+import Loader from '@/components/Loader'
+
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
+
+
 export default function Home() {
+
+  const [loading, setLoading] = useState(true)
+  const supabase = useSupabaseClient()
+  const user = useUser()
+
+  useEffect(() => {
+    try {
+      if (user) {
+        router.push('/dashboard')
+      }
+    } catch (error) { } finally {
+      setLoading(false)
+    }
+  }, [user])
+
+  if (loading) return <Loader />
+
+
   return (
     <>
       <Head>
