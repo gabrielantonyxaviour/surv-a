@@ -49,10 +49,10 @@ export default function Login() {
 
   const handleOAuthLogin = async (e, provider) => {
     e.preventDefault()
-    const { data: { user }, error } = await supabase.auth.signInWithOAuth({ provider }, {
+    const { data: { url }, error } = await supabase.auth.signInWithOAuth({ provider }, {
       redirectTo: 'http://localhost:3000/dashboard'
     })
-    if (user) {
+    if (url) {
       router.push('/dashboard')
     } else {
       console.log(error)
