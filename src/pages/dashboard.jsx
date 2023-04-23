@@ -68,9 +68,8 @@ export default function dashboard() {
     yAxis: {
       type: 'value',
     },
-    tooltip:{
-      show:true,
-      
+    tooltip: {
+      show: true,
     },
     series: [
       {
@@ -104,7 +103,7 @@ export default function dashboard() {
       <div className="flex">
         <Header />
         <main
-          className="mb-2 ml-8 mt-10 h-screen w-[60%] text-black"
+          className="mb-2 ml-8 mt-10 h-screen w-[55%] text-black"
           style={{ height: `calc(100vh - 40px)` }}
         >
           <h1 className="ml-2 text-2xl font-bold text-indigo-900">Dashboard</h1>
@@ -131,7 +130,10 @@ export default function dashboard() {
               count={43}
             />
           </div>
-          <h1 className="ml-2 mt-4 text-  xl font-bold text-indigo-900">Survey Responses</h1>
+          <h1 className="ml-2 mt-4 text-xl font-bold text-indigo-900">
+            Survey Responses
+          </h1>
+          <ReactECharts option={options} style={{ height: 300 }} />
           <ReactECharts option={options} style={{ height: 300 }} />
         </main>
       </div>

@@ -47,49 +47,52 @@ export default function Header() {
     router.push('/')
   }
 
-
   return (
     <header className="bg-white">
       <nav
-        className={`relative my-4 ml-4 inline-block h-full flex-col items-center justify-between rounded-xl bg-indigo-500 text-white drop-shadow-lg transition duration-150 ease-in-out w-[200px] `}
+        className={`relative my-4 ml-4 inline-block h-full w-[200px] flex-col items-center justify-between rounded-xl bg-indigo-500 text-white drop-shadow-lg transition duration-150 ease-in-out `}
       >
         <div className=" mb-8 mt-4">
           <a href="/">
             <div className="flex">
-            <img
-              src="/openai.svg"
-              alt="My App Logo"
-              className={` h-12 rounded-full mx-4`}
-              style={{ filter: "brightness(0) saturate(100%) invert(1)"}}
-            />
-            <p className="text-white font-bold text-xl my-auto">SURV-A</p>
+              <img
+                src="/openai.svg"
+                alt="My App Logo"
+                className={` mx-4 h-12 rounded-full`}
+                style={{ filter: 'brightness(0) saturate(100%) invert(1)' }}
+              />
+              <p className="my-auto text-xl font-bold text-white">SURV-A</p>
             </div>
           </a>
         </div>
-        <img src="https://picsum.photos/80" alt="pfp" className="rounded-full my-2 mx-auto"  />
-        <h1 className="text-center text-lg font-bold">{"Gabriel Antony"}</h1>
-        <h3 className="text-center text-xs font-semibold mb-12">{"gabrielantony56@gmail.com"}</h3>
+        <img
+          src="https://picsum.photos/80"
+          alt="pfp"
+          className="mx-auto my-2 rounded-full"
+        />
+        <h1 className="text-center text-lg font-bold">{'Gabriel Antony'}</h1>
+        <h3 className="mb-12 text-center text-xs font-semibold">
+          {'gabrielantony56@gmail.com'}
+        </h3>
         <div className="flex-grow">
           <div className="flex flex-col gap-8">
             {navigation.map((item) => (
               <div className="mx-auto">
-
-<a
-                key={item.name}
-                href={item.href}
-                className={`text-sm font-semibold leading-6 text-white'
-                }`}
-              >
-                <FontAwesomeIcon
-                  icon={item.icon}
-                  size="xl"
-                  className="mx-auto"
-                />
-                &nbsp;&nbsp;&nbsp;
-                { item.name}
-              </a>
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className={`text-white' } text-sm font-semibold
+                leading-6`}
+                >
+                  <FontAwesomeIcon
+                    icon={item.icon}
+                    size="xl"
+                    className="mx-auto"
+                  />
+                  &nbsp;&nbsp;&nbsp;
+                  {item.name}
+                </a>
               </div>
-             
             ))}
           </div>
         </div>
