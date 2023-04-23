@@ -50,7 +50,7 @@ export default function dashboard() {
           className="mb-2 ml-8 mt-10 h-screen w-[60%] text-black"
           style={{ height: `calc(100vh - 40px)` }}
         >
-          <h1 className="text-2xl font-bold text-indigo-900">Dashboard</h1>
+          <h1 className="ml-2 text-2xl font-bold text-indigo-900">Dashboard</h1>
           {/* <p className="mt-3 text-2xl">
             Get started by editing{' '}
             <code className="rounded-md bg-gray-100 p-3 font-mono text-lg">
@@ -58,9 +58,9 @@ export default function dashboard() {
             </code>
           </p> */}
           <div className="flex">
-            <NumberElement title="Hello" icon={faUser} count={1000} />
-            <NumberElement title="Hello" icon={faUser} count={1000} />
-            <NumberElement title="Hello" icon={faUser} count={1000} />
+            <NumberElement title="Created Surveys" icon={faUser} count={24} />
+            <NumberElement title="Total Responses" icon={faUser} count={2314} />
+            <NumberElement title="Filled Surveys" icon={faUser} count={43} />
           </div>
         </main>
       </div>

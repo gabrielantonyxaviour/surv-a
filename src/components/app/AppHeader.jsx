@@ -28,11 +28,11 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react'
 // view survey - /survey/{id}
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon:  faHome},
+  { name: 'Dashboard', href: '/dashboard', icon: faHome },
   { name: 'View Survey', href: '/admin', icon: faEye },
   { name: 'Create Survey', href: '/admin/create', icon: faFileAlt },
   { name: 'Filled Survey', href: '/survey', icon: faClipboardCheck },
-  {name: 'Your Profile', href: '/profile',icon: faUser}
+  { name: 'Your Profile', href: '/profile', icon: faUser },
   // { name: 'Company', href: '#' },
 ]
 
@@ -54,26 +54,25 @@ export default function Header() {
   return (
     <header className="bg-white">
       <nav
-        className={`relative ml-4 my-4 inline-block flex-col items-center justify-between rounded-xl bg-indigo-500 text-white drop-shadow-lg transition duration-150 ease-in-out ${isExpanded?`w-[160px] `:`w-[60px]`}`}
+        className={`relative my-4 ml-4 inline-block flex-col items-center justify-between rounded-xl bg-indigo-500 text-white drop-shadow-lg transition duration-150 ease-in-out ${
+          isExpanded ? `w-[160px] ` : `w-[60px]`
+        }`}
         style={{ height: `calc(100vh - 40px)` }}
       >
-        <div className=" mt-4 mb-12">
+        <div className=" mb-12 mt-4">
           <a href="/">
             <img
               src="/logo.jpg"
               alt="My App Logo"
-              className={`h-12 rounded-full mx-auto`}
+              className={`mx-auto h-12 rounded-full`}
             />
           </a>
         </div>
         <div className="absolute right-0 top-16 -mr-3 drop-shadow-lg">
-          <button
-            onClick={toggleNav}
-            className=""
-          >
+          <button onClick={toggleNav} className="">
             <FontAwesomeIcon
               icon={isExpanded ? faChevronCircleLeft : faChevronCircleRight}
-              className="h-6 w-6 text-white hover:text-indigo-100  transition duration-150 ease-in-out"
+              className="h-6 w-6 text-white transition  duration-150 ease-in-out hover:text-indigo-100"
             />
           </button>
         </div>
@@ -83,11 +82,17 @@ export default function Header() {
               <a
                 key={item.name}
                 href={item.href}
-                className={`text-sm font-semibold leading-6 text-white  ${!isExpanded?'mx-auto':'ml-3'}`}
+                className={`text-sm font-semibold leading-6 text-white  ${
+                  !isExpanded ? 'mx-auto' : 'ml-3'
+                }`}
               >
-                <FontAwesomeIcon icon={item.icon} size="xl"  />
+                <FontAwesomeIcon
+                  icon={item.icon}
+                  size="xl"
+                  className="mx-auto"
+                />
                 &nbsp;&nbsp;&nbsp;
-                {isExpanded&&item.name}
+                {isExpanded && item.name}
               </a>
             ))}
           </div>
