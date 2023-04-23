@@ -3,7 +3,17 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-
+import {
+  faTachometerAlt,
+  faHome,
+  faEye,
+  faFileAlt,
+  faUser,
+  faClipboardCheck,
+  faChevronCircleLeft,
+  faChevronCircleRight,
+} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Logo } from '../Logo'
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
 
@@ -18,16 +28,18 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react'
 // view survey - /survey/{id}
 
 const navigation = [
-  { name: 'View Survey', href: '/admin' },
-  { name: 'Create Survey', href: '/admin/create' },
-  { name: 'Filled Survey', href: '/survey' },
+  { name: 'Dashboard', href: '/dashboard', icon:  faHome},
+  { name: 'View Survey', href: '/admin', icon: faEye },
+  { name: 'Create Survey', href: '/admin/create', icon: faFileAlt },
+  { name: 'Filled Survey', href: '/survey', icon: faClipboardCheck },
+  {name: 'Your Profile', href: '/profile',icon: faUser}
   // { name: 'Company', href: '#' },
 ]
 
 export default function Header() {
   const router = useRouter()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
+  const [isExpanded, setIsExpanded] = useState(false)
   const supabase = useSupabaseClient()
 
   const handleClick = async (e) => {
@@ -35,11 +47,57 @@ export default function Header() {
     await supabase.auth.signOut()
     router.push('/')
   }
-
+  const toggleNav = () => {
+    setIsExpanded(!isExpanded)
+  }
 
   return (
     <header className="bg-white">
-      <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
+      <nav
+        className={`relative ml-2 my-4 inline-block w-[70px] flex-col items-center justify-between rounded-lg bg-indigo-600 text-white drop-shadow-lg transition duration-150 ease-in-out ${isExpanded?`w-[160px] `:``}`}
+        style={{ height: `calc(100vh - 40px)` }}
+      >
+        <div className=" mt-4 mb-12">
+          <a href="/">
+            <img
+              src="/logo.jpg"
+              alt="My App Logo"
+              className={`h-12 rounded-full mx-auto`}
+            />
+          </a>
+        </div>
+        <div className="absolute right-0 top-16 -mr-3 drop-shadow-lg">
+          <button
+            onClick={toggleNav}
+            className=""
+          >
+            <FontAwesomeIcon
+              icon={isExpanded ? faChevronCircleLeft : faChevronCircleRight}
+              className="h-6 w-6 text-white hover:text-indigo-100  transition duration-150 ease-in-out"
+            />
+          </button>
+        </div>
+        <div className="flex-grow">
+          <div className="flex flex-col gap-10">
+            {navigation.map((item) => (
+              <a
+                key={item.name}
+                href={item.href}
+                className={`text-sm font-semibold leading-6 text-white  ${!isExpanded?'mx-auto':'ml-3'}`}
+              >
+                <FontAwesomeIcon icon={item.icon} size="xl"  />
+                &nbsp;&nbsp;&nbsp;
+                {isExpanded&&item.name}
+              </a>
+            ))}
+          </div>
+        </div>
+      </nav>
+
+      {/* <nav
+        className="flex items-center justify-between p-6 lg:px-8"
+        aria-label="Global"
+      >
         <div className="flex lg:flex-1">
           <button href="#" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
@@ -60,19 +118,30 @@ export default function Header() {
         </div>
         <div className="hidden lg:flex lg:gap-x-12">
           {navigation.map((item) => (
-            <a key={item.name} href={item.href} className="text-sm font-semibold leading-6 text-gray-900 hover:text-indigo-600">
+            <a
+              key={item.name}
+              href={item.href}
+              className="text-sm font-semibold leading-6 text-gray-900 hover:text-indigo-600"
+            >
               {item.name}
             </a>
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <button onClick={(e) => handleClick(e)}
-            className="text-sm font-semibold leading-6 text-gray-900">
+          <button
+            onClick={(e) => handleClick(e)}
+            className="text-sm font-semibold leading-6 text-gray-900"
+          >
             Log Out <span aria-hidden="true">&rarr;</span>
           </button>
         </div>
-      </nav>
-      <Dialog as="div" className="lg:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
+      </nav> */}
+      <Dialog
+        as="div"
+        className="lg:hidden"
+        open={mobileMenuOpen}
+        onClose={setMobileMenuOpen}
+      >
         <div className="fixed inset-0 z-10" />
         <Dialog.Panel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
@@ -121,5 +190,3 @@ export default function Header() {
     </header>
   )
 }
-
-

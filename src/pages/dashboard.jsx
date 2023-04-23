@@ -7,20 +7,18 @@ import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 import { useRouter } from 'next/router'
 import Loader from '@/components/Loader'
 
-
-
 export default function dashboard() {
-
   const [loading, setLoading] = useState(true)
   const user = useUser()
   const router = useRouter()
 
   useEffect(() => {
     try {
-      if (!user) {
+      if (user) {
         router.push('/login')
       }
-    } catch { } finally {
+    } catch {
+    } finally {
       setLoading(false)
     }
   }, [user])
