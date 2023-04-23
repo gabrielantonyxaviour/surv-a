@@ -39,7 +39,6 @@ const navigation = [
 export default function Header() {
   const router = useRouter()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [isExpanded, setIsExpanded] = useState(false)
   const supabase = useSupabaseClient()
 
   const handleClick = async (e) => {
@@ -47,43 +46,38 @@ export default function Header() {
     await supabase.auth.signOut()
     router.push('/')
   }
-  const toggleNav = () => {
-    setIsExpanded(!isExpanded)
-  }
+
 
   return (
     <header className="bg-white">
       <nav
-        className={`relative my-4 ml-4 inline-block flex-col items-center justify-between rounded-xl bg-indigo-500 text-white drop-shadow-lg transition duration-150 ease-in-out ${
-          isExpanded ? `w-[160px] ` : `w-[60px]`
-        }`}
-        style={{ height: `calc(100vh - 40px)` }}
+        className={`relative my-4 ml-4 inline-block h-full flex-col items-center justify-between rounded-xl bg-indigo-500 text-white drop-shadow-lg transition duration-150 ease-in-out w-[200px] `}
       >
-        <div className=" mb-12 mt-4">
+        <div className=" mb-8 mt-4">
           <a href="/">
+            <div className="flex">
             <img
-              src="/logo.jpg"
+              src="/openai.svg"
               alt="My App Logo"
-              className={`mx-auto h-12 rounded-full`}
+              className={` h-12 rounded-full mx-4`}
+              style={{ filter: "brightness(0) saturate(100%) invert(1)"}}
             />
+            <p className="text-white font-bold text-xl my-auto">SURV-A</p>
+            </div>
           </a>
         </div>
-        <div className="absolute right-0 top-16 -mr-3 drop-shadow-lg">
-          <button onClick={toggleNav} className="">
-            <FontAwesomeIcon
-              icon={isExpanded ? faChevronCircleLeft : faChevronCircleRight}
-              className="h-6 w-6 text-white transition  duration-150 ease-in-out hover:text-indigo-100"
-            />
-          </button>
-        </div>
+        <img src="https://picsum.photos/80" alt="pfp" className="rounded-full my-2 mx-auto"  />
+        <h1 className="text-center text-lg font-bold">{"Gabriel Antony"}</h1>
+        <h3 className="text-center text-xs font-semibold mb-12">{"gabrielantony56@gmail.com"}</h3>
         <div className="flex-grow">
-          <div className="flex flex-col gap-10">
+          <div className="flex flex-col gap-8">
             {navigation.map((item) => (
-              <a
+              <div className="mx-auto">
+
+<a
                 key={item.name}
                 href={item.href}
-                className={`text-sm font-semibold leading-6 text-white  ${
-                  !isExpanded ? 'mx-auto' : 'ml-3'
+                className={`text-sm font-semibold leading-6 text-white'
                 }`}
               >
                 <FontAwesomeIcon
@@ -92,8 +86,10 @@ export default function Header() {
                   className="mx-auto"
                 />
                 &nbsp;&nbsp;&nbsp;
-                {isExpanded && item.name}
+                { item.name}
               </a>
+              </div>
+             
             ))}
           </div>
         </div>

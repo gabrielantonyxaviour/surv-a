@@ -6,7 +6,13 @@ import { useState } from 'react'
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 import { useRouter } from 'next/router'
 import Loader from '@/components/Loader'
-import { faUser } from '@fortawesome/free-solid-svg-icons'
+import {
+  faUser,
+  faFileAlt,
+  faCommentAlt,
+  faClipboardCheck,
+} from '@fortawesome/free-solid-svg-icons'
+import ReactECharts from 'echarts-for-react'
 import { NumberElement } from '@/components/NumberElement'
 export default function dashboard() {
   const [loading, setLoading] = useState(true)
@@ -25,6 +31,57 @@ export default function dashboard() {
   }, [user])
 
   if (loading) return <Loader />
+  const options = {
+    xAxis: {
+      type: 'category',
+      data: [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+      ],
+    },
+    yAxis: {
+      type: 'value',
+    },
+    tooltip:{
+      show:true,
+      
+    },
+    series: [
+      {
+        data: [
+          120, 200, 150, 80, 70, 110, 130, 120, 200, 150, 80, 70, 110, 130, 120,
+          200, 150, 80, 70, 110, 130, 120, 200, 150, 80, 70, 110, 130,
+        ],
+        type: 'bar',
+      },
+    ],
+  }
 
   // Total surveys created - Number
   // Total surveys filled - Number
@@ -58,10 +115,24 @@ export default function dashboard() {
             </code>
           </p> */}
           <div className="flex">
-            <NumberElement title="Created Surveys" icon={faUser} count={24} />
-            <NumberElement title="Total Responses" icon={faUser} count={2314} />
-            <NumberElement title="Filled Surveys" icon={faUser} count={43} />
+            <NumberElement
+              title="Created Surveys"
+              icon={faFileAlt}
+              count={24}
+            />
+            <NumberElement
+              title="Total Responses"
+              icon={faCommentAlt}
+              count={2314}
+            />
+            <NumberElement
+              title="Filled Surveys"
+              icon={faClipboardCheck}
+              count={43}
+            />
           </div>
+          <h1 className="ml-2 mt-4 text-  xl font-bold text-indigo-900">Survey Responses</h1>
+          <ReactECharts option={options} style={{ height: 300 }} />
         </main>
       </div>
     </>
