@@ -54,7 +54,7 @@ export default function Header() {
   return (
     <header className="bg-white">
       <nav
-        className={`relative ml-2 my-4 inline-block w-[70px] flex-col items-center justify-between rounded-lg bg-indigo-600 text-white drop-shadow-lg transition duration-150 ease-in-out ${isExpanded?`w-[160px] `:``}`}
+        className={`relative ml-4 my-4 inline-block flex-col items-center justify-between rounded-xl bg-indigo-500 text-white drop-shadow-lg transition duration-150 ease-in-out ${isExpanded?`w-[160px] `:`w-[60px]`}`}
         style={{ height: `calc(100vh - 40px)` }}
       >
         <div className=" mt-4 mb-12">
