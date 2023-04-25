@@ -3,7 +3,7 @@ import React from 'react'
 
 const NumberElement = ({ title, count, icon }) => {
   return (
-    <div className="mx-2 my-4 flex h-[120px] grow flex-col  rounded-xl border-[1px] border-slate-100 bg-white p-4 text-black drop-shadow-xl hover:border-indigo-600 hover:bg-indigo-500 hover:text-white">
+    <div className="mx-2 my-4 flex h-[120px] grow flex-col  rounded-xl border-[1px] border-slate-100 bg-white p-4 text-black drop-shadow-xl hover:border-indigo-600 hover:bg-indigo-500 hover:text-white transition delay-150 duration-300 ease-in-out">
       <div>
         <div className="flex justify-between ">
           <h1 className="text-sm font-semibold">{title}</h1>
