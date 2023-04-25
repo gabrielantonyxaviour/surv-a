@@ -12,6 +12,7 @@ import {
   faClipboardCheck,
   faChevronCircleLeft,
   faChevronCircleRight,
+  faSignOutAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Logo } from '../Logo'
@@ -74,26 +75,43 @@ export default function Header() {
         <h3 className="mb-12 text-center text-xs font-semibold">
           {'gabrielantony56@gmail.com'}
         </h3>
-        <div className="flex-grow">
-          <div className="flex flex-col gap-8">
-            {navigation.map((item) => (
-              <div className="mx-auto">
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className={`text-white' } text-sm font-semibold
+        <div className="flex flex-col justify-between">
+          <div className="flex-grow">
+            <div className="flex flex-col gap-8">
+              {navigation.map((item) => (
+                <div className="mx-auto">
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    className={`text-white' } text-sm font-semibold
                 leading-6`}
-                >
-                  <FontAwesomeIcon
-                    icon={item.icon}
-                    size="xl"
-                    className="mx-auto"
-                  />
-                  &nbsp;&nbsp;&nbsp;
-                  {item.name}
-                </a>
-              </div>
-            ))}
+                  >
+                    <FontAwesomeIcon
+                      icon={item.icon}
+                      size="xl"
+                      className="mx-auto"
+                    />
+                    &nbsp;&nbsp;&nbsp;
+                    {item.name}
+                  </a>
+                </div>
+              ))}
+              <button
+                onClick={(e) => {
+                  console.log('Logout')
+                }}
+                className={`text-sm font-semibold leading-6
+                text-white`}
+              >
+                <FontAwesomeIcon
+                  icon={faSignOutAlt}
+                  size="xl"
+                  className="mx-auto"
+                />
+                &nbsp;&nbsp;&nbsp;
+                {'Log-out'}
+              </button>
+            </div>
           </div>
         </div>
       </nav>

@@ -367,7 +367,7 @@ export default function dashboard() {
             />
           </div>
           <div className="ml-4 ">
-            <h1 className=" text-xl font-bold text-indigo-900">
+            <h1 className="ml-8 text-xl font-bold text-indigo-900">
               Sentiment Analysis
             </h1>
             <ReactECharts
