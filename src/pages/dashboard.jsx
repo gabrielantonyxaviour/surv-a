@@ -3,7 +3,11 @@ import Header from '@/components/app/AppHeader'
 import Head from 'next/head'
 
 import { useState } from 'react'
-import { useSession, useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
+import {
+  useSession,
+  useSupabaseClient,
+  useUser,
+} from '@supabase/auth-helpers-react'
 import { useRouter } from 'next/router'
 import Loader from '@/components/Loader'
 import {
@@ -15,10 +19,11 @@ import {
 import ReactECharts from 'echarts-for-react'
 import * as echarts from 'echarts'
 import { NumberElement } from '@/components/NumberElement'
-
+import Loading from '@/components/Loading'
 
 export default function dashboard() {
   const [loading, setLoading] = useState(true)
+  const [animationComplete, setAnimationComplete] = useState(false)
   const supabase = useSupabaseClient()
   const user = useUser()
   const router = useRouter()
@@ -53,8 +58,8 @@ export default function dashboard() {
       } else {
         router.push('/login')
       }
-    } catch (error) { }
-    finally {
+    } catch (error) {
+    } finally {
       setLoading(false)
     }
   }
@@ -69,35 +74,40 @@ export default function dashboard() {
         .from('answers')
         .select('id')
       setTotalResponses(responses.length)
-      const { data: filledSurvey } = await supabase
-        .from('answers')
-        .select()
+      const { data: filledSurvey } = await supabase.from('answers').select()
       setSurveyFilled(filledSurvey.length)
       const { data: positive, error: positiveError } = await supabase
         .from('answers')
         .select()
-        .eq('label', "\"POSITIVE\"")
+        .eq('label', '"POSITIVE"')
       setPositiveCount(positive.length)
-      setPositivePercent(Math.round(positive.length / responses.length * 100))
+      setPositivePercent(Math.round((positive.length / responses.length) * 100))
       const { data: negative, error: negativeError } = await supabase
         .from('answers')
         .select()
-        .eq('label', "\"NEGATIVE\"")
+        .eq('label', '"NEGATIVE"')
       setNegativeCount(negative.length)
-      setNegativePercent(Math.round(negative.length / responses.length * 100))
+      setNegativePercent(Math.round((negative.length / responses.length) * 100))
       setNeutralCount(responses.length - positive.length - negative.length)
-      setNeutralPercent(Math.round((1 - positive.length / responses.length - negative.length / responses.length) * 100))
-    } catch (error) { }
+      setNeutralPercent(
+        Math.round(
+          (1 -
+            positive.length / responses.length -
+            negative.length / responses.length) *
+            100
+        )
+      )
+    } catch (error) {}
   }
 
   const getDistinctCountries = (data) => {
-    const countries = new Set();
-    data.forEach(obj => {
+    const countries = new Set()
+    data.forEach((obj) => {
       if (obj.country) {
-        countries.add(obj.country);
+        countries.add(obj.country)
       }
-    });
-    return Array.from(countries);
+    })
+    return Array.from(countries)
   }
 
   const positiveLineGraph = async () => {
@@ -126,19 +136,19 @@ export default function dashboard() {
             answer_id: answer.id,
             label: answer.label,
             created_at: answer.created_at,
-            country: answer.response_country
+            country: answer.response_country,
           })
         })
       })
     })
     const distinctCountries = getDistinctCountries(lineGraphData)
     setCountries(distinctCountries)
-    let count = 0;
+    let count = 0
     let data = []
     distinctCountries.map((country) => {
       lineGraphData.map((obj) => {
-        if (obj.country == country && obj.label == "\"POSITIVE\"") {
-          count++;
+        if (obj.country == country && obj.label == '"POSITIVE"') {
+          count++
         }
       })
       data.push({
@@ -147,11 +157,10 @@ export default function dashboard() {
           color: '#50C878',
         },
       })
-      count = 0;
+      count = 0
     })
     setPositiveData(data)
   }
-
 
   const negativeLineGraph = async () => {
     // const { data: countryData, error } = await supabase.rpc('count_answers_by_country_and_label')
@@ -179,18 +188,18 @@ export default function dashboard() {
             answer_id: answer.id,
             label: answer.label,
             created_at: answer.created_at,
-            country: answer.response_country
+            country: answer.response_country,
           })
         })
       })
     })
     const distinctCountries = getDistinctCountries(lineGraphData)
-    let count = 0;
+    let count = 0
     let data = []
     distinctCountries.map((country) => {
       lineGraphData.map((obj) => {
-        if (obj.country == country && obj.label == "\"NEGATIVE\"") {
-          count++;
+        if (obj.country == country && obj.label == '"NEGATIVE"') {
+          count++
         }
       })
       data.push({
@@ -199,12 +208,11 @@ export default function dashboard() {
           color: '#D22B2B',
         },
       })
-      count = 0;
+      count = 0
     })
     // console.log(data)
     setNegativeData(data)
   }
-
 
   function getVirtualData(year) {
     const date = +echarts.time.parse(year + '-01-01')
@@ -220,7 +228,14 @@ export default function dashboard() {
     return data
   }
 
-  if (loading) return <Loader />
+  if (loading || !animationComplete)
+    return (
+      <Loading
+        onComplete={() => {
+          setAnimationComplete(true)
+        }}
+      />
+    )
 
   const positiveLineOption = {
     title: {
@@ -409,7 +424,7 @@ export default function dashboard() {
   return (
     <>
       <Head>
-        <title>Dashboard - TaxPal</title>
+        <title>Dashboard - SURV-A</title>
       </Head>
       <div className="mx-auto flex max-w-[1290px]">
         <Header />

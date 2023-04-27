@@ -15,9 +15,7 @@ import Loader from '@/components/Loader'
 
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 
-
 export default function Home() {
-
   const [loading, setLoading] = useState(true)
   const supabase = useSupabaseClient()
   const user = useUser()
@@ -27,18 +25,18 @@ export default function Home() {
       if (user) {
         router.push('/dashboard')
       }
-    } catch (error) { } finally {
+    } catch (error) {
+    } finally {
       setLoading(false)
     }
   }, [user])
 
   if (loading) return <Loader />
 
-
   return (
     <>
       <Head>
-        <title>TaxPal - Accounting made simple for small businesses</title>
+        <title>SURV-A - Accounting made simple for small businesses</title>
         <meta
           name="description"
           content="Most bookkeeping software is accurate, but hard to use. We make the opposite trade-off, and hope you don’t get audited."
