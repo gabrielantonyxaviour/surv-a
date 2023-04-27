@@ -1,18 +1,18 @@
 import Header from '@/components/app/AppHeader'
 import Head from 'next/head'
 import React, { useState } from 'react'
-import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faRocket, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-
 export default function create() {
+  const [title, setTitle] = useState('')
   const [questions, setQuestions] = useState([])
   const [currentQuestion, setCurrentQuestion] = useState(null)
   const [viewOptions, setViewOptions] = useState(0)
   return (
     <>
       <Head>
-        <title>Your Surveys - TaxPal</title>
+        <title>Your Surveys - SURV-A</title>
       </Head>
       <div className="mx-auto flex max-w-[1290px]">
         <Header />
@@ -27,6 +27,23 @@ export default function create() {
             <p className=" text-md  ml-2 font-medium text-black">
               Click the + icon to create questions!
             </p>
+            <div className="mr-4 mt-8 flex flex-col items-center justify-center rounded-xl bg-indigo-500 p-6 text-white">
+              <div className="w-full">
+                <h2 className="ml-2  text-2xl font-semibold">Survey Title</h2>
+                <input
+                  type="text"
+                  placeholder="Enter the title here"
+                  value={title}
+                  onChange={(event) => {
+                    setTitle(event.target.value)
+                  }}
+                  className="mb-4 mt-2 w-full rounded-lg bg-white px-4 py-2 text-indigo-500 focus:outline-none"
+                />
+              </div>
+            </div>
+            <h2 className="ml-2 mt-5 text-2xl font-bold text-indigo-900">
+              Questions
+            </h2>
             {questions.map((e, index) => {
               return e.name == 'short-text' || e.name == 'long-text' ? (
                 <div className="mr-4 mt-8 flex flex-col items-center justify-center rounded-xl bg-indigo-500 p-6 text-white">
@@ -90,25 +107,27 @@ export default function create() {
                     <h2 className="ml-2 font-semibold">Options</h2>
                     <div className="grid grid-cols-3 gap-4">
                       {e.options != null &&
-                        e.options?.map((op, index) => {
+                        e.options?.map((op, idx) => {
                           return (
                             <input
                               type="text"
-                              placeholder={'Option' + (index + 1)}
+                              placeholder={'Option' + (idx + 1)}
                               value={op.value}
                               className="mb-4 mt-2 w-full rounded-lg bg-white px-4 py-2 text-indigo-500 focus:outline-none"
                               onChange={(event) => {
                                 const updatedOptions = [...e.options]
-                                updatedOptions[index] = event.target.value
+                                updatedOptions[idx] = event.target.value
                                 const updatedArray = questions.map((item) => {
-                                  if (item.id == questions[index].id)
+                                  if (item.id == questions[index].id) {
                                     return {
                                       ...item,
                                       options: updatedOptions,
                                     }
-                                  else return item
+                                  } else return item
                                 })
+                                console.log('Final Updated Array', updatedArray)
                                 setQuestions(updatedArray)
+                                console.log(questions)
                               }}
                             />
                           )
@@ -232,10 +251,6 @@ export default function create() {
                   Options Answer
                 </button>
               </div>
-            ) : viewOptions == 2 || viewOptions == 3 ? (
-              <></>
-            ) : viewOptions == 4 ? (
-              <></>
             ) : (
               <div className="flex justify-center">
                 <button
@@ -245,6 +260,18 @@ export default function create() {
                   }}
                 >
                   +
+                </button>
+              </div>
+            )}
+            {questions.length > 0 && (
+              <div className="flex justify-end">
+                <button
+                  className="rounded-xl bg-[#50C878] p-3 text-xl font-semibold text-white"
+                  onClick={() => {
+                    // Submit Form
+                  }}
+                >
+                  <FontAwesomeIcon icon={faRocket} /> &nbsp; Create
                 </button>
               </div>
             )}
