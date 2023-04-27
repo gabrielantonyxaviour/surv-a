@@ -1,31 +1,31 @@
 import React, { useEffect, useState } from 'react'
-import { useSupabaseClient } from '@supabase/auth-helpers-react'
+import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'
 import Loader from '@/components/Loader'
 
 export default function view() {
   // const router = useRouter()
   const [loading, setLoading] = useState(true)
   const supabase = useSupabaseClient()
+  const session = useSession()
   const [surveyId, setSurveyId] = useState('')
   const [survey, setSurvey] = useState([])
 
   useEffect(() => {
-    fetchSurvey().finally(() => {
+    privateRoute()
+  }, [session])
+
+  const privateRoute = async () => {
+    try {
+      if (session) {
+        await fetchSurvey()
+      } else {
+        router.push('/login')
+      }
+    } catch (error) { }
+    finally {
       setLoading(false)
-    })
-  }, [])
-
-  const faqs = [
-    {
-      id: 1,
-      question: "What's the best thing about Switzerland?",
-      answer:
-        "I don't know, but the flag is a big plus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
-    },
-    // More questions...
-  ]
-
-
+    }
+  }
 
   const fetchSurvey = async () => {
     const surveyId = window.location.href.split('/')[4]
@@ -51,7 +51,7 @@ export default function view() {
         <div className="mx-auto max-w-7xl divide-y divide-gray-900/10 px-6 py-24 sm:py-32 lg:px-8 lg:py-40">
           <h2 className="text-2xl font-bold leading-10 tracking-tight text-gray-900">{survey.survey_title}</h2>
           <dl className="mt-10 space-y-8 divide-y divide-gray-900/10">
-            {survey.questions.map((question) => (
+            {survey.questions?.map((question) => (
               <div key={question.id} className="pt-8 lg:grid lg:grid-cols-12 lg:gap-8">
                 <dt className="text-base font-semibold leading-7 text-gray-900 lg:col-span-5">{question.question}</dt>
                 <dd dd className="mt-4 lg:col-span-7 lg:mt-0" >

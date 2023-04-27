@@ -4,20 +4,34 @@ import React, { useEffect, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
 import * as echarts from 'echarts'
 import timeDifference from '@/utils/timeDifference'
-import { useSupabaseClient } from '@supabase/auth-helpers-react'
+import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'
 import Loader from '@/components/Loader'
 
 export default function index() {
 
   const [loading, setLoading] = useState(true)
   const supabase = useSupabaseClient()
-  const [formattedSurveys, setFormattedSurveys] = useState([
+  const session = useSession()
+  const [formattedSurveys, setFormattedSurveys] = useState([])
 
-  ])
 
   useEffect(() => {
-    fetchSurveys().finally(() => setLoading(false))
-  }, [])
+    privateRoute()
+  }, [session])
+
+  const privateRoute = async () => {
+    try {
+      if (session) {
+        await fetchSurveys()
+      } else {
+        router.push('/login')
+      }
+    } catch (error) { }
+    finally {
+      setLoading(false)
+    }
+  }
+
 
   const fetchSurveys = async () => {
     try {

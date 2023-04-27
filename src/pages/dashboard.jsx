@@ -3,7 +3,7 @@ import Header from '@/components/app/AppHeader'
 import Head from 'next/head'
 
 import { useState } from 'react'
-import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
+import { useSession, useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 import { useRouter } from 'next/router'
 import Loader from '@/components/Loader'
 import {
@@ -22,6 +22,7 @@ export default function dashboard() {
   const supabase = useSupabaseClient()
   const user = useUser()
   const router = useRouter()
+  const session = useSession()
 
   const [totalCreatedSurveys, setTotalCreatedSurveys] = useState(0)
   const [totalResponses, setTotalResponses] = useState(0)
@@ -40,20 +41,23 @@ export default function dashboard() {
   const [negativeData, setNegativeData] = useState([])
 
   useEffect(() => {
+    privateRoute()
+  }, [session])
+
+  const privateRoute = async () => {
     try {
-      // console.log(user)
-      if (!user || user == null) {
-        router.push('/login')
+      if (session) {
+        await dashboardAnalytics()
+        await positiveLineGraph()
+        await negativeLineGraph()
       } else {
-        dashboardAnalytics()
-        positiveLineGraph()
-        negativeLineGraph()
+        router.push('/login')
       }
-    } catch {
-    } finally {
+    } catch (error) { }
+    finally {
       setLoading(false)
     }
-  }, [])
+  }
 
   const dashboardAnalytics = async () => {
     try {
@@ -299,6 +303,7 @@ export default function dashboard() {
       },
     ],
   }
+
   const gaugeOptions = {
     title: {
       show: true,

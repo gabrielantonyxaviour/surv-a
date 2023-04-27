@@ -6,7 +6,7 @@ import backgroundImage from '../images/background-auth.jpg'
 import { useRef, useEffect, useState } from "react"
 import { Logo } from '@/components/Logo'
 import Loader from '@/components/Loader'
-import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
+import { useSupabaseClient, useUser, useSession } from '@supabase/auth-helpers-react'
 
 export default function Login() {
 
@@ -17,16 +17,23 @@ export default function Login() {
   const [loading, setLoading] = useState(true)
   const supabase = useSupabaseClient()
   const user = useUser()
+  const session = useSession()
 
   useEffect(() => {
+    privateRoute()
+  }, [session])
+
+  const privateRoute = async () => {
     try {
-      if (user || user !== null) {
+      // console.log(session)
+      if (session) {
         router.push('/dashboard')
       }
-    } catch (error) { } finally {
+    } catch (error) { }
+    finally {
       setLoading(false)
     }
-  }, [])
+  }
 
 
   const handleSubmit = async (e) => {
@@ -36,7 +43,6 @@ export default function Login() {
       password: passwordRef.current.value
     })
     if (user) {
-      console.log(user)
       router.push('/dashboard')
     } else {
       console.log(error)
@@ -45,10 +51,8 @@ export default function Login() {
 
   const handleOAuthLogin = async (e, provider) => {
     e.preventDefault()
-    const { data: { url }, error } = await supabase.auth.signInWithOAuth({ provider }, {
-      redirectTo: 'http://localhost:3000/dashboard'
-    })
-    if (url) {
+    const { user, error } = await supabase.auth.signInWithOAuth({ provider })
+    if (user) {
       router.push('/dashboard')
     } else {
       console.log(error)
