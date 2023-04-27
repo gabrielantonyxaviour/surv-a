@@ -111,7 +111,7 @@ export default function create() {
     return (
       <Loading
         onComplete={() => {
-          setLoading(true)
+          setLoading(false)
         }}
       />
     )
