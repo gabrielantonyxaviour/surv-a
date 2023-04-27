@@ -39,6 +39,7 @@ export default function create() {
   const handleClick = async (e) => {
     setLoading(true)
     let user_id = user.id;
+    let surveyId = ''
     // let survey_title = title;
     if (user_id && user_id !== null) {
       const { data: surveyInput } = await supabase
@@ -51,6 +52,7 @@ export default function create() {
       if (surveyInput.length > 0) {
         let survey = surveyInput[0];
         let survey_id = survey.id;
+        surveyId = survey_id;
         for (let i = 0; i < questions.length; i++) {
           let question = questions[i];
           let question_type = question.name;
@@ -78,6 +80,7 @@ export default function create() {
         }
       }
     }
+    console.log(`http://localhost:3000/survey/${surveyId}`)
     setLoading(false)
   }
 
