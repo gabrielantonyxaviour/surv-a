@@ -26,7 +26,7 @@ export default function create() {
               Click the + icon to create questions!
             </p>
             {questions.map((e, index) => {
-              return e.name == 'short-text' || 'long-text' ? (
+              return e.name == 'short-text' || e.name == 'long-text' ? (
                 <div className="mr-4 mt-8 flex flex-col items-center justify-center rounded-xl bg-indigo-500 p-6 text-white">
                   {/* Input box for question */}
                   <div className="w-full">
@@ -35,21 +35,17 @@ export default function create() {
                       {e.name == 'short-text' ? 'Short Text' : 'Long Text'}{' '}
                       Question
                     </h2>
-                    {<p>{questions[index].value}</p>}
                     <input
                       type="text"
                       placeholder="Enter your question here"
-                      value={questions[index].value}
+                      value={e.value}
                       onChange={(event) => {
-                        const updatedQuestions = questions
-                        updatedQuestions[index] = {
-                          ...questions[index],
-                          value: event.target.value,
-                        }
-                        console.log(updatedQuestions)
-
-                        setQuestions(updatedQuestions)
-                        console.log(questions[index].value)
+                        const updatedArray = questions.map((item) => {
+                          if (item.id == questions[index].id)
+                            return { ...item, value: event.target.value }
+                          else return item
+                        })
+                        setQuestions(updatedArray)
                       }}
                       className="mb-4 mt-2 w-full rounded-lg bg-white px-4 py-2 text-indigo-500 focus:outline-none"
                     />
@@ -61,49 +57,76 @@ export default function create() {
                         const newQuestions = [...questions]
                         newQuestions.splice(index, 1)
                         setQuestions(newQuestions)
+                        setViewOptions(0)
+                        setCurrentQuestion(null)
                       }}
                     >
                       <FontAwesomeIcon icon={faTrash} />
                     </button>
                   </div>
                 </div>
-              ) : e.type == 'radio' ? (
+              ) : e.name == 'multiple-choice' ? (
                 <div className="mt-8 flex flex-col items-center justify-center rounded-xl bg-indigo-500 p-6 text-white">
-                  {/* Input box for question */}
                   <div className="w-full">
-                    <h2 className="ml-2 font-semibold">Question</h2>
+                    <h2 className="ml-2 font-semibold">
+                      Multiple Choice Question
+                    </h2>
                     <input
                       type="text"
                       placeholder="Enter your question here"
+                      value={e.value}
                       className="mb-4 mt-2 w-full rounded-lg bg-white px-4 py-2 text-indigo-500 focus:outline-none"
-                      onChange={(e) => {
-                        setQuestions([
-                          ...questions,
-                          {
-                            id:
-                              questions[questions.length - 1] != null
-                                ? questions[questions.length - 1].id + 1
-                                : 0,
-                            question: e.target.value,
-                            type: 'text',
-                            options: [],
-                            required: true,
-                          },
-                        ])
+                      onChange={(event) => {
+                        const updatedArray = questions.map((item) => {
+                          if (item.id == questions[index].id)
+                            return { ...item, value: event.target.value }
+                          else return item
+                        })
+                        setQuestions(updatedArray)
                       }}
                     />
                     <h2 className="ml-2 font-semibold">Options</h2>
-                    {e.options.map((op, index) => {
-                      return
-                    })}
-                    <button
-                      className="mt-8  rounded-xl bg-[#50C878] px-4 py-2 text-white"
-                      onClick={() => {
-                        // setViewOptions(true)
-                      }}
-                    >
-                      +
-                    </button>
+                    <div className="grid grid-cols-3 gap-4">
+                      {e.options != null &&
+                        e.options?.map((op, index) => {
+                          return (
+                            <input
+                              type="text"
+                              placeholder={'Option' + (index + 1)}
+                              value={op.value}
+                              className="mb-4 mt-2 w-full rounded-lg bg-white px-4 py-2 text-indigo-500 focus:outline-none"
+                              onChange={(event) => {
+                                const updatedOptions = [...e.options]
+                                updatedOptions[index] = event.target.value
+                                const updatedArray = questions.map((item) => {
+                                  if (item.id == questions[index].id)
+                                    return {
+                                      ...item,
+                                      options: updatedOptions,
+                                    }
+                                  else return item
+                                })
+                                setQuestions(updatedArray)
+                              }}
+                            />
+                          )
+                        })}
+                      <button
+                        className="my-3  rounded-xl bg-[#50C878] px-4 py-2 text-white"
+                        onClick={() => {
+                          const updatedOptions = [...e.options]
+                          updatedOptions.push('')
+                          const updatedArray = questions.map((item) => {
+                            if (item.id == questions[index].id)
+                              return { ...item, options: updatedOptions }
+                            else return item
+                          })
+                          setQuestions(updatedArray)
+                        }}
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
                   <div className="flex w-full justify-end">
                     <button
@@ -133,20 +156,11 @@ export default function create() {
                     value={currentQuestion.value}
                     className="mb-4 mt-2 w-full rounded-lg bg-white px-4 py-2 text-indigo-500 focus:outline-none"
                     onChange={(e) => {
-                      //  setCurrentQuestion(...questions, {
-                      //    id:
-                      //      questions[questions.length - 1] != null
-                      //        ? questions[questions.length - 1].id + 1
-                      //        : 0,
-                      //    question: e.target.value,
-                      //    type: 'text',
-                      //    options: [],
-                      //    required: true,
-                      //  })
                       setCurrentQuestion({
                         ...currentQuestion,
                         value: e.target.value,
                       })
+                      console.log(currentQuestion)
                     }}
                   />
                 </div>
@@ -193,16 +207,10 @@ export default function create() {
                 <button
                   className="mt-8 grow rounded-xl bg-gray-500 px-4 py-2 text-white"
                   onClick={() => {
-                    setQuestions([
-                      ...questions,
-                      {
-                        id: questions.length + 1,
-                        question: '',
-                        type: 'radio',
-                        options: [],
-                        required: false,
-                      },
-                    ])
+                    setCurrentQuestion({
+                      name: 'long-text',
+                      id: questions.length + 1,
+                    })
                     setViewOptions(3)
                   }}
                 >
@@ -211,16 +219,11 @@ export default function create() {
                 <button
                   className="mt-8 grow rounded-xl bg-gray-500 px-4 py-2 text-white"
                   onClick={() => {
-                    setQuestions([
-                      ...questions,
-                      {
-                        id: questions.length + 1,
-                        question: '',
-                        type: 'slider',
-                        options: [],
-                        required: false,
-                      },
-                    ])
+                    setCurrentQuestion({
+                      name: 'multiple-choice',
+                      id: questions.length + 1,
+                      options: [],
+                    })
                     setViewOptions(4)
                   }}
                 >
