@@ -6,47 +6,47 @@ import backgroundImage from '@/images/background-faqs.jpg'
 const faqs = [
   [
     {
-      question: 'Does TaxPal handle VAT?',
+      question: 'What types of surveys can Surv-A analyze?',
       answer:
-        'Well no, but if you move your company offshore you can probably ignore it.',
+        'Surv-A can analyze any type of survey, whether it\'s a customer satisfaction survey, employee feedback survey, or any other type of survey',
     },
     {
-      question: 'Can I pay for my subscription via purchase order?',
-      answer: 'Absolutely, we are happy to take your money in all forms.',
+      question: 'Can I export my survey data to other software programs?',
+      answer: 'Yes , you can export data but only in the form of an image',
     },
     {
-      question: 'How do I apply for a job at TaxPal?',
+      question: 'Does Surv-A offer support if I have any issues?',
       answer:
-        'We only hire our customers, so subscribe for a minimum of 6 months and then let’s talk.',
+        'Yes, Surv-A provides customer support through email and chat, and has a comprehensive knowledge base with tutorials and guides',
     },
   ],
   [
     {
-      question: 'What was that testimonial about tax fraud all about?',
+      question: 'How much does Surv-A cost?',
       answer:
-        'TaxPal is just a software application, ultimately your books are your responsibility.',
+        'Surv-A offers a range of pricing plans to suit your needs, from free basic accounts to paid plans with more advanced features. Check out our pricing page for more information.',
     },
     {
       question:
-        'TaxPal sounds horrible but why do I still feel compelled to purchase?',
+        'Is Surv-A secure and reliable?',
       answer:
-        'This is the power of excellent visual design. You just can’t resist it, no matter how poorly it actually functions.',
+        'Yes, Surv-A uses secure SSL encryption to protect your data and is hosted on reliable servers with regular backups and maintenance.',
     },
     {
       question:
-        'I found other companies called TaxPal, are you sure you can use this name?',
+        'Is my survey data safe with Surv-A?',
       answer:
-        'Honestly not sure at all. We haven’t actually incorporated or anything, we just thought it sounded cool and made this website.',
+        'Absolutely - we take data security very seriously at Surv-A. All survey data is stored securely on our servers, and we use industry-standard encryption and security measures to protect your data.',
     },
   ],
   [
     {
-      question: 'How do you generate reports?',
+      question: 'How many responses can I collect with Surv-A?',
       answer:
-        'You just tell us what data you need a report for, and we get our kids to create beautiful charts for you using only the finest crayons.',
+        'There is no limit to the number of responses you can collect with Surv-A.',
     },
     {
-      question: 'Can we expect more inventory features?',
+      question: 'Can we expect more AI features?',
       answer: 'In life it’s really better to never expect anything at all.',
     },
     {

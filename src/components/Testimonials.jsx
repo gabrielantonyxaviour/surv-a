@@ -11,7 +11,7 @@ const testimonials = [
   [
     {
       content:
-        'TaxPal is so easy to use I can’t help but wonder if it’s really doing the things the government expects me to do.',
+        'I\'ve tried a lot of survey software in my time, and I have to say that Surv-A is hands-down the best I\'ve used. The level of customization and analysis options are unparalleled, and the customer support team is top-notch',
       author: {
         name: 'Sheryl Berge',
         role: 'CEO at Lynch LLC',
@@ -20,7 +20,7 @@ const testimonials = [
     },
     {
       content:
-        'I’m trying to get a hold of someone in support, I’m in a lot of trouble right now and they are saying it has something to do with my books. Please get back to me right away.',
+        'The sleek design and user-friendly interface make it a pleasure to work with, and the graphs and charts it generates are visually stunning.',
       author: {
         name: 'Amy Hahn',
         role: 'Director at Velocity Industries',
@@ -31,7 +31,7 @@ const testimonials = [
   [
     {
       content:
-        'The best part about TaxPal is every time I pay my employees, my bank balance doesn’t go down like it used to. Looking forward to spending this extra cash when I figure out why my card is being declined.',
+        'I was hesitant to try yet another analysis tool, but Surv-A has truly impressed me with its intuitive interface and powerful features. It\'s been a game-changer for our business.',
       author: {
         name: 'Leland Kiehn',
         role: 'Founder of Kiehn and Sons',
@@ -40,7 +40,7 @@ const testimonials = [
     },
     {
       content:
-        'There are so many things I had to do with my old software that I just don’t do at all with TaxPal. Suspicious but I can’t say I don’t love it.',
+        'Surv-A has saved me so much time and frustration when it comes to analyzing survey responses. The AI-powered analysis is incredibly accurate and provides valuable insights that I wouldn\'t have been able to find on my own.',
       author: {
         name: 'Erin Powlowski',
         role: 'COO at Armstrong Inc',
@@ -51,19 +51,19 @@ const testimonials = [
   [
     {
       content:
-        'I used to have to remit tax to the EU and with TaxPal I somehow don’t have to do that anymore. Nervous to travel there now though.',
+        'As a student, I was always struggling to analyze data for my research papers. Surv-A made it easy and intuitive, with insightful charts and graphs to support my findings. ',
       author: {
         name: 'Peter Renolds',
-        role: 'Founder of West Inc',
+        role: 'Student',
         image: avatarImage3,
       },
     },
     {
       content:
-        'This is the fourth email I’ve sent to your support team. I am literally being held in jail for tax fraud. Please answer your damn emails, this is important.',
+        'simply in love with it ! The sleek design and user-friendly interface make it a pleasure to work with.',
       author: {
         name: 'Amy Hahn',
-        role: 'Director at Velocity Industries',
+        role: 'Manager at Velocity Industries',
         image: avatarImage4,
       },
     },
@@ -88,12 +88,10 @@ export function Testimonials() {
       <Container>
         <div className="mx-auto max-w-2xl md:text-center">
           <h2 className="font-display text-3xl tracking-tight text-slate-900 sm:text-4xl">
-            Loved by businesses worldwide.
+            Fall in love with us a lil bit more!
           </h2>
           <p className="mt-4 text-lg tracking-tight text-slate-700">
-            Our software is so simple that people can’t help but fall in love
-            with it. Simplicity is easy when you just skip tons of
-            mission-critical features.
+          Our streamlined approach to survey analysis and data visualization ensures that you can effortlessly understand your data, which is driving love from people around the world.
           </p>
         </div>
         <ul
