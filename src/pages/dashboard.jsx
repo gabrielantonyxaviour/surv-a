@@ -15,21 +15,64 @@ import {
 import ReactECharts from 'echarts-for-react'
 import * as echarts from 'echarts'
 import { NumberElement } from '@/components/NumberElement'
+
+
 export default function dashboard() {
   const [loading, setLoading] = useState(true)
+  const supabase = useSupabaseClient()
   const user = useUser()
   const router = useRouter()
 
+  const [totalCreatedSurveys, setTotalCreatedSurveys] = useState(0)
+  const [totalResponses, setTotalResponses] = useState(0)
+  const [positivePercent, setPositivePercent] = useState(0)
+  const [negativePercent, setNegativePercent] = useState(0)
+  const [neutralPercent, setNeutralPercent] = useState(0)
+
+  const [positiveCount, setPositiveCount] = useState(0)
+  const [negativeCount, setNegativeCount] = useState(0)
+  const [neutralCount, setNeutralCount] = useState(0)
+
   useEffect(() => {
     try {
-      if (user) {
+      if (!user) {
         router.push('/login')
+      } else {
+        dashboardAnalytics()
       }
     } catch {
     } finally {
       setLoading(false)
     }
-  }, [user])
+  }, [])
+
+  const dashboardAnalytics = async () => {
+    try {
+      const { data: surveys, error: surveysError } = await supabase
+        .from('survey')
+        .select('id')
+      setTotalCreatedSurveys(surveys.length)
+      const { data: responses, error: responsesError } = await supabase
+        .from('answers')
+        .select('id')
+      setTotalResponses(responses.length)
+      const { data: positive, error: positiveError } = await supabase
+        .from('answers')
+        .select()
+        .eq('label', "\"POSITIVE\"")
+      setPositiveCount(positive.length)
+      setPositivePercent(Math.round(positive.length / responses.length * 100))
+      const { data: negative, error: negativeError } = await supabase
+        .from('answers')
+        .select()
+        .eq('label', "\"NEGATIVE\"")
+      setNegativeCount(negative.length)
+      setNegativePercent(Math.round(negative.length / responses.length * 100))
+      setNeutralCount(responses.length - positive.length - negative.length)
+      setNeutralPercent(Math.round((1 - positive.length / responses.length - negative.length / responses.length) * 100))
+    } catch (error) { }
+  }
+
 
   function getVirtualData(year) {
     const date = +echarts.time.parse(year + '-01-01')
@@ -194,19 +237,19 @@ export default function dashboard() {
       {
         data: [
           {
-            value: 120,
+            value: positiveCount,
             itemStyle: {
               color: '#50C878',
             },
           },
           {
-            value: 30,
+            value: neutralCount,
             itemStyle: {
               color: '#FAC858',
             },
           },
           {
-            value: 80,
+            value: negativeCount,
             itemStyle: {
               color: '#D22B2B',
             },
@@ -250,7 +293,7 @@ export default function dashboard() {
         },
         data: [
           {
-            value: 20,
+            value: positivePercent,
             name: 'Positive',
             title: {
               offsetCenter: ['-40%', '80%'],
@@ -263,7 +306,7 @@ export default function dashboard() {
             },
           },
           {
-            value: 40,
+            value: neutralPercent,
             name: 'Neutral',
             itemStyle: {
               color: '#FAC858',
@@ -276,7 +319,7 @@ export default function dashboard() {
             },
           },
           {
-            value: 60,
+            value: negativePercent,
             name: 'Negative',
             itemStyle: {
               color: '#D22B2B',
@@ -343,12 +386,12 @@ export default function dashboard() {
               <NumberElement
                 title="Created Surveys"
                 icon={faFileAlt}
-                count={24}
+                count={totalCreatedSurveys}
               />
               <NumberElement
                 title="Total Responses"
                 icon={faCommentAlt}
-                count={2314}
+                count={totalResponses}
               />
               <NumberElement
                 title="Filled Surveys"

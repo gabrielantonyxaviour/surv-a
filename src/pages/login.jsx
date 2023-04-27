@@ -2,13 +2,10 @@ import Image from 'next/image'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-
 import backgroundImage from '../images/background-auth.jpg'
 import { useRef, useEffect, useState } from "react"
 import { Logo } from '@/components/Logo'
-
 import Loader from '@/components/Loader'
-
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 
 export default function Login() {
@@ -16,7 +13,6 @@ export default function Login() {
   const router = useRouter()
   const emailRef = useRef()
   const passwordRef = useRef()
-
 
   const [loading, setLoading] = useState(true)
   const supabase = useSupabaseClient()

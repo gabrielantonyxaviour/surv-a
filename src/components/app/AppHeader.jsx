@@ -45,7 +45,7 @@ export default function Header() {
   const handleClick = async (e) => {
     e.preventDefault()
     await supabase.auth.signOut()
-    router.push('/')
+    await router.push('/')
   }
 
   return (
