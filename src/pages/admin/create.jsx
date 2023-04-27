@@ -3,6 +3,8 @@ import Head from 'next/head'
 import React, { useState } from 'react'
 import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+
 export default function create() {
   const [questions, setQuestions] = useState([])
   const [currentQuestion, setCurrentQuestion] = useState(null)
