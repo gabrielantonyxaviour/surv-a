@@ -20,13 +20,13 @@ export default function Login() {
 
   useEffect(() => {
     try {
-      if (user) {
+      if (user || user !== null) {
         router.push('/dashboard')
       }
     } catch (error) { } finally {
       setLoading(false)
     }
-  }, [user])
+  }, [])
 
 
   const handleSubmit = async (e) => {
