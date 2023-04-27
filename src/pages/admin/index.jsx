@@ -28,7 +28,6 @@ export default function index() {
           questions ( id, question , answers (id , answer , label , score))
         `)
       data.forEach((survey) => {
-        console.log(timeDifference(new Date(survey.created_at)))
         setFormattedSurveys(() => [
           ...formattedSurveys,
           {
