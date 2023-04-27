@@ -8,7 +8,7 @@ import backgroundImage from '../images/background-auth.jpg'
 import { useRef, useEffect, useState } from "react"
 import { Logo } from '@/components/Logo'
 
-import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
+import { useSupabaseClient, useUser, useSession } from '@supabase/auth-helpers-react'
 import Loader from '@/components/Loader'
 
 export default function Register() {
@@ -20,16 +20,23 @@ export default function Register() {
   const [loading, setLoading] = useState(true)
   const supabase = useSupabaseClient()
   const user = useUser()
+  const session = useSession()
 
   useEffect(() => {
+    privateRoute()
+  }, [session])
+
+  const privateRoute = async () => {
     try {
-      if (user) {
+      // console.log(session)
+      if (session) {
         router.push('/dashboard')
       }
-    } catch (error) { } finally {
+    } catch (error) { }
+    finally {
       setLoading(false)
     }
-  }, [user])
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
