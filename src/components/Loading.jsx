@@ -2,14 +2,14 @@ import loading from '../../public/surva.json'
 import React, { useEffect, useRef } from 'react'
 import lottie from 'lottie-web'
 
-const FullScreenLottie = ({ animationData }) => {
+const FullScreenLottie = ({ animationData, onComplete }) => {
   const containerRef = useRef()
 
   useEffect(() => {
     const animation = lottie.loadAnimation({
       container: containerRef.current,
       renderer: 'svg',
-      loop: true,
+      loop: false,
       autoplay: true,
       animationData: animationData,
       rendererSettings: {
@@ -17,6 +17,9 @@ const FullScreenLottie = ({ animationData }) => {
       },
     })
 
+    animation.addEventListener('complete', () => {
+      onComplete()
+    })
     return () => {
       animation.destroy()
     }
@@ -36,8 +39,8 @@ const FullScreenLottie = ({ animationData }) => {
   )
 }
 
-const Loading = () => {
-  return <FullScreenLottie animationData={loading} />
+const Loading = ({ onComplete }) => {
+  return <FullScreenLottie animationData={loading} onComplete={onComplete} />
 }
 
 export default Loading

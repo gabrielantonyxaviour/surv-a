@@ -1,12 +1,12 @@
 import Header from '@/components/app/AppHeader'
 import Head from 'next/head'
 import React, { useState } from 'react'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 export default function create() {
   const [questions, setQuestions] = useState([])
-  const [currentQuestion, setCurrentQuestion] = useState({})
-  const [viewOptions, setViewOptions] = useState(false)
+  const [currentQuestion, setCurrentQuestion] = useState(null)
+  const [viewOptions, setViewOptions] = useState(0)
   return (
     <>
       <Head>
@@ -26,27 +26,32 @@ export default function create() {
               Click the + icon to create questions!
             </p>
             {questions.map((e, index) => {
-              return e.type == 'text' ? (
-                <div className="mt-8 flex flex-col items-center justify-center rounded-xl bg-indigo-500 p-6 text-white">
+              return e.name == 'short-text' || 'long-text' ? (
+                <div className="mr-4 mt-8 flex flex-col items-center justify-center rounded-xl bg-indigo-500 p-6 text-white">
                   {/* Input box for question */}
                   <div className="w-full">
-                    <h2 className="ml-2 font-semibold">Question</h2>
+                    <h2 className="ml-2 font-semibold">
+                      {e.id} |{' '}
+                      {e.name == 'short-text' ? 'Short Text' : 'Long Text'}{' '}
+                      Question
+                    </h2>
+                    {<p>{questions[index].value}</p>}
                     <input
                       type="text"
                       placeholder="Enter your question here"
-                      className="mb-4 mt-2 w-full rounded-lg bg-white px-4 py-2 text-indigo-500 focus:outline-none"
-                      onChange={(e) => {
-                        setQuestions(...questions, {
-                          id:
-                            questions[questions.length - 1] != null
-                              ? questions[questions.length - 1].id + 1
-                              : 0,
-                          question: e.target.value,
-                          type: 'text',
-                          options: [],
-                          required: true,
-                        })
+                      value={questions[index].value}
+                      onChange={(event) => {
+                        const updatedQuestions = questions
+                        updatedQuestions[index] = {
+                          ...questions[index],
+                          value: event.target.value,
+                        }
+                        console.log(updatedQuestions)
+
+                        setQuestions(updatedQuestions)
+                        console.log(questions[index].value)
                       }}
+                      className="mb-4 mt-2 w-full rounded-lg bg-white px-4 py-2 text-indigo-500 focus:outline-none"
                     />
                   </div>
                   <div className="flex w-full justify-end">
@@ -94,7 +99,7 @@ export default function create() {
                     <button
                       className="mt-8  rounded-xl bg-[#50C878] px-4 py-2 text-white"
                       onClick={() => {
-                        setViewOptions(true)
+                        // setViewOptions(true)
                       }}
                     >
                       +
@@ -117,28 +122,76 @@ export default function create() {
                 <div></div>
               )
             })}
+            {currentQuestion != null && (
+              <div className="mr-4 mt-8 flex flex-col items-center justify-center rounded-xl bg-gray-500 p-5 text-white">
+                {/* Input box for question */}
+                <div className="w-full">
+                  <h2 className="ml-2 font-semibold">Question</h2>
+                  <input
+                    type="text"
+                    placeholder="Enter your question here"
+                    value={currentQuestion.value}
+                    className="mb-4 mt-2 w-full rounded-lg bg-white px-4 py-2 text-indigo-500 focus:outline-none"
+                    onChange={(e) => {
+                      //  setCurrentQuestion(...questions, {
+                      //    id:
+                      //      questions[questions.length - 1] != null
+                      //        ? questions[questions.length - 1].id + 1
+                      //        : 0,
+                      //    question: e.target.value,
+                      //    type: 'text',
+                      //    options: [],
+                      //    required: true,
+                      //  })
+                      setCurrentQuestion({
+                        ...currentQuestion,
+                        value: e.target.value,
+                      })
+                    }}
+                  />
+                </div>
+                <div className="flex w-full justify-end">
+                  <button
+                    className="mx-2 rounded-xl bg-[#50C878] px-4 py-2 text-white"
+                    onClick={() => {
+                      const existingQuestions = [...questions]
+                      existingQuestions.push(currentQuestion)
+                      console.log(existingQuestions)
+                      setQuestions(existingQuestions)
+                      setCurrentQuestion(null)
+                      setViewOptions(0)
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faCheck} />
+                  </button>
+                  <button
+                    className="mx-2 rounded-xl bg-[#D22B2B] px-4 py-2 text-white"
+                    onClick={() => {
+                      setCurrentQuestion(null)
+                      setViewOptions(0)
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                  </button>
+                </div>
+              </div>
+            )}
             {viewOptions == 1 ? (
-              <div className="flex justify-around gap-4">
+              <div className="mr-4 flex justify-around gap-4">
                 <button
-                  className="mt-8 grow  rounded-xl bg-indigo-500 px-4 py-2 text-white"
+                  className=" mt-8  grow  rounded-xl bg-gray-500 px-4 py-2 text-white"
                   onClick={() => {
-                    setQuestions([
-                      ...questions,
-                      {
-                        id: questions.length + 1,
-                        question: '',
-                        type: 'text',
-                        options: [],
-                        required: false,
-                      },
-                    ])
-                    setViewOptions(false)
+                    setCurrentQuestion({
+                      name: 'short-text',
+                      id: questions.length + 1,
+                    })
+                    setViewOptions(2)
                   }}
                 >
-                  Text answer
+                  Short Text Answer
                 </button>
                 <button
-                  className="mt-8 grow rounded-xl bg-indigo-500 px-4 py-2 text-white"
+                  className="mt-8 grow rounded-xl bg-gray-500 px-4 py-2 text-white"
                   onClick={() => {
                     setQuestions([
                       ...questions,
@@ -150,13 +203,13 @@ export default function create() {
                         required: false,
                       },
                     ])
-                    setViewOptions(false)
+                    setViewOptions(3)
                   }}
                 >
-                  Options answer
+                  Long Text Answer
                 </button>
                 <button
-                  className="mt-8 grow rounded-xl bg-indigo-500 px-4 py-2 text-white"
+                  className="mt-8 grow rounded-xl bg-gray-500 px-4 py-2 text-white"
                   onClick={() => {
                     setQuestions([
                       ...questions,
@@ -168,18 +221,22 @@ export default function create() {
                         required: false,
                       },
                     ])
-                    setViewOptions(false)
+                    setViewOptions(4)
                   }}
                 >
-                  Slider answer
+                  Options Answer
                 </button>
               </div>
+            ) : viewOptions == 2 || viewOptions == 3 ? (
+              <></>
+            ) : viewOptions == 4 ? (
+              <></>
             ) : (
               <div className="flex justify-center">
                 <button
                   className="mt-8  rounded-xl bg-indigo-500 px-4 py-2 text-white"
                   onClick={() => {
-                    setViewOptions(true)
+                    setViewOptions(1)
                   }}
                 >
                   +
