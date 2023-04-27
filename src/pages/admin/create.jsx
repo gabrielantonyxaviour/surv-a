@@ -1,14 +1,105 @@
 import Header from '@/components/app/AppHeader'
 import Head from 'next/head'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { faCheck, faRocket, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useSession, useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
+import Loader from '@/components/Loader'
+// import Loading from '@/components/Loading'
 
 export default function create() {
   const [title, setTitle] = useState('')
   const [questions, setQuestions] = useState([])
+  const [loading, setLoading] = useState(true)
   const [currentQuestion, setCurrentQuestion] = useState(null)
   const [viewOptions, setViewOptions] = useState(0)
+  const user = useUser();
+  const session = useSession()
+  const supabase = useSupabaseClient()
+
+  useEffect(() => {
+    privateRoute()
+  }, [session])
+
+  const privateRoute = async () => {
+    try {
+      if (session) {
+        // await dashboardAnalytics()
+        // await positiveLineGraph()
+        // await negativeLineGraph()
+      } else {
+        router.push('/login')
+      }
+    } catch (error) {
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleClick = async (e) => {
+    setLoading(true)
+    let user_id = user.id;
+    // let survey_title = title;
+    if (user_id && user_id !== null) {
+      const { data: surveyInput } = await supabase
+        .from('survey').insert({
+          user_id,
+          survey_title: title
+        })
+        .select()
+      // console.log(surveyInput)
+      if (surveyInput.length > 0) {
+        let survey = surveyInput[0];
+        let survey_id = survey.id;
+        for (let i = 0; i < questions.length; i++) {
+          let question = questions[i];
+          let question_type = question.name;
+          let question_text = question.value;
+          let question_options = question.options;
+          const { data: questionInput } = await supabase
+            .from('questions')
+            .insert({
+              survey_id: survey_id,
+              question_type: question_type,
+              question: question_text,
+            }).select()
+          if (questionInput.length > 0 && question_type == "multiple-choice") {
+            let question_id = questionInput[0].id;
+            for (let j = 0; j < question_options.length; j++) {
+              let option = question_options[j];
+              const { data: optionInput } = await supabase
+                .from('options')
+                .insert({
+                  question_id: question_id,
+                  option: option
+                }).select()
+            }
+          }
+        }
+      }
+    }
+    setLoading(false)
+  }
+
+  //   [
+  //     {
+  //         "name": "short-text",
+  //         "id": 1,
+  //         "value": "How was WFH."
+  //     },
+  //     {
+  //         "name": "multiple-choice",
+  //         "id": 2,
+  //         "options": [
+  //             "Yes",
+  //             "No"
+  //         ],
+  //         "value": "Will you suggest WFH."
+  //     }
+  // ]
+
+  if (loading) return <Loader />
+
   return (
     <>
       <Head>
@@ -125,9 +216,9 @@ export default function create() {
                                     }
                                   } else return item
                                 })
-                                console.log('Final Updated Array', updatedArray)
+                                // console.log('Final Updated Array', updatedArray)
                                 setQuestions(updatedArray)
-                                console.log(questions)
+                                // console.log(questions)
                               }}
                             />
                           )
@@ -181,7 +272,7 @@ export default function create() {
                         ...currentQuestion,
                         value: e.target.value,
                       })
-                      console.log(currentQuestion)
+                      // console.log(currentQuestion)
                     }}
                   />
                 </div>
@@ -191,7 +282,7 @@ export default function create() {
                     onClick={() => {
                       const existingQuestions = [...questions]
                       existingQuestions.push(currentQuestion)
-                      console.log(existingQuestions)
+                      // console.log(existingQuestions)
                       setQuestions(existingQuestions)
                       setCurrentQuestion(null)
                       setViewOptions(0)
@@ -266,9 +357,12 @@ export default function create() {
             {questions.length > 0 && (
               <div className="flex justify-end">
                 <button
-                  className="rounded-xl bg-[#50C878] p-3 text-xl font-semibold text-white"
-                  onClick={() => {
+                  className="rounded-xl bg-[#50C878] p-2 text-xl font-semibold text-white mr-4"
+                  onClick={(e) => {
+                    // console.log(questions)
+                    // console.log(title)
                     // Submit Form
+                    handleClick(e)
                   }}
                 >
                   <FontAwesomeIcon icon={faRocket} /> &nbsp; Create
