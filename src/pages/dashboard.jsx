@@ -34,11 +34,9 @@ export default function dashboard() {
 
   const [positivePercent, setPositivePercent] = useState(0)
   const [negativePercent, setNegativePercent] = useState(0)
-  const [neutralPercent, setNeutralPercent] = useState(0)
 
   const [positiveCount, setPositiveCount] = useState(0)
   const [negativeCount, setNegativeCount] = useState(0)
-  const [neutralCount, setNeutralCount] = useState(0)
 
   const [countries, setCountries] = useState([])
   const [positiveData, setPositiveData] = useState([])
@@ -87,15 +85,6 @@ export default function dashboard() {
         .eq('label', '"NEGATIVE"')
       setNegativeCount(negative.length)
       setNegativePercent(Math.round((negative.length / responses.length) * 100))
-      setNeutralCount(responses.length - positive.length - negative.length)
-      setNeutralPercent(
-        Math.round(
-          (1 -
-            positive.length / responses.length -
-            negative.length / responses.length) *
-            100
-        )
-      )
     } catch (error) {}
   }
 
@@ -287,7 +276,7 @@ export default function dashboard() {
     },
     xAxis: {
       type: 'category',
-      data: ['Postive', 'Neutral', 'Negative'],
+      data: ['Postive', 'Negative'],
     },
     yAxis: {
       type: 'value',
@@ -301,12 +290,7 @@ export default function dashboard() {
               color: '#50C878',
             },
           },
-          {
-            value: neutralCount,
-            itemStyle: {
-              color: '#FAC858',
-            },
-          },
+
           {
             value: negativeCount,
             itemStyle: {
@@ -365,19 +349,7 @@ export default function dashboard() {
               offsetCenter: ['-40%', '95%'],
             },
           },
-          {
-            value: neutralPercent,
-            name: 'Neutral',
-            itemStyle: {
-              color: '#FAC858',
-            },
-            title: {
-              offsetCenter: ['0%', '80%'],
-            },
-            detail: {
-              offsetCenter: ['0%', '95%'],
-            },
-          },
+
           {
             value: negativePercent,
             name: 'Negative',
