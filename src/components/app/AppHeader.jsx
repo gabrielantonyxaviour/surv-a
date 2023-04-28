@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import {
@@ -39,11 +39,21 @@ const navigation = [
 export default function Header() {
   const router = useRouter()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [userData, setUserData] = useState(null)
 
   const handleClick = async (e) => {
     e.preventDefault()
     await supabase.auth.signOut()
     await router.push('/')
+  }
+
+  useEffect(() => {
+    handleData()
+  }, [])
+
+  const handleData = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    setUserData(user)
   }
 
   return (
@@ -69,9 +79,9 @@ export default function Header() {
           alt="pfp"
           className="mx-auto my-2 rounded-full"
         />
-        <h1 className="text-center text-lg font-bold">{'Gabriel Antony'}</h1>
-        <h3 className="mb-12 text-center text-xs font-semibold">
-          {'gabrielantony56@gmail.com'}
+        {/* <h1 className="text-center text-lg font-bold">{userData.email}</h1> */}
+        <h3 className="mb-12 mt-5 text-center text-xs font-semibold">
+          {userData?.email}
         </h3>
         <div className="flex flex-col justify-between">
           <div className="flex-grow">
