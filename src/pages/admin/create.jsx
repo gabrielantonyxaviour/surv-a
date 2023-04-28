@@ -93,8 +93,8 @@ export default function create() {
         }
       }
     }
-    console.log(`http://localhost:3000/survey/${surveyId}`)
-    setRedirectURL(`http://localhost:3000/survey/${surveyId}`)
+    console.log(`https://surv-a.vercel.app/survey/${surveyId}`)
+    setRedirectURL(`https://surv-a.vercel.app/survey/${surveyId}`)
     // setLoading(false)
   }
 

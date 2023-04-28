@@ -38,12 +38,14 @@ export default function index() {
 
   const fetchSurveys = async () => {
     try {
+      let user = (await supabase.auth.getUser()).data.user.id
       const { data, error } = await supabase.from('survey').select(`
           id, 
           survey_title, 
           created_at,
           questions ( id, question , answers (id , answer , label , score))
-        `)
+        `).eq('user_id', user)
+      // console.log(data)
       const formattedSurveys = []
       data.forEach((survey) => {
         formattedSurveys.push({
