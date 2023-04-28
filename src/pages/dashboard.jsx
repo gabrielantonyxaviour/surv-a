@@ -32,7 +32,7 @@ export default function dashboard() {
 
   const [totalCreatedSurveys, setTotalCreatedSurveys] = useState(0)
   const [totalResponses, setTotalResponses] = useState(0)
-  const [surveyFilled, setSurveyFilled] = useState(0)
+  const [surveyFilled, setSurveyFilled] = useState(1)
 
   const [positivePercent, setPositivePercent] = useState(0)
   const [negativePercent, setNegativePercent] = useState(0)
@@ -86,7 +86,7 @@ export default function dashboard() {
         .select('id')
       setTotalResponses(responses.length)
       const { data: filledSurvey } = await supabase.from('answers').select()
-      setSurveyFilled(filledSurvey.length)
+      // setSurveyFilled(filledSurvey.length)
       const { data: positive, error: positiveError } = await supabase
         .from('answers')
         .select()
