@@ -16,7 +16,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Logo } from '../Logo'
-import { useSupabaseClient } from '@supabase/auth-helpers-react'
+import { supabase } from '@/helpers/supabase'
 
 // landing - /
 // login - /login
@@ -32,14 +32,13 @@ const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: faHome },
   { name: 'View Survey', href: '/admin', icon: faEye },
   { name: 'Create Survey', href: '/admin/create', icon: faFileAlt },
-  { name: 'Filled Survey', href: '/survey', icon: faClipboardCheck },
+  // { name: 'Filled Survey', href: '/survey', icon: faClipboardCheck },
   // { name: 'Company', href: '#' },
 ]
 
 export default function Header() {
   const router = useRouter()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const supabase = useSupabaseClient()
 
   const handleClick = async (e) => {
     e.preventDefault()

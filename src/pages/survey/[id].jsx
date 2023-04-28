@@ -11,33 +11,41 @@ import { registerCoreBlocks } from '@quillforms/react-renderer-utils'
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 registerCoreBlocks()
 import axios from 'axios'
+import { supabase } from '@/helpers/supabase'
+import PrivateRoute from '@/routes/PrivateRoute'
 
 export default function view() {
   // const [user] = useContext(UserContext)
-  const [user, setUser] = useState({ loading: true })
-  const [status, setStatus] = useState('Loading...')
-  const [community, setCommunity] = useState({ loading: true })
-  const supabase = useSupabaseClient()
+  // const [user, setUser] = useState({ loading: true })
+  // const [status, setStatus] = useState('Loading...')
+  // const [community, setCommunity] = useState({ loading: true })
+  // const supabase = useSupabaseClient()
   const [blocks, setBlocks] = useState([])
   const [data, setData] = useState()
   const [authUser, setAuthUser] = useState()
-  const supaUser = useUser()
+  // const supaUser = useUser()
   const [location, setLocation] = useState(null)
 
-  useEffect(() => {
-    setStatus('')
-    setAuthUser(supaUser)
+  // useEffect(() => {
+  //   setStatus('')
+  //   setAuthUser(supaUser)
 
+  //   fetchQuestions()
+  // }, [user])
+
+  useEffect(() => {
+    // setStatus('')
     fetchQuestions()
-  }, [user])
+  }, [])
 
   const handleData = async (data) => {
     // e.preventDefault()
+    const user_id = (await supabase.auth.getUser()).data.user.id
     const survey_id = window.location.href.split('/')[4]
     const res = await axios.get('https://ipapi.co/json')
     // console.log(res.data)
     const location = res.data.country_name
-    console.log(location)
+    // console.log(location)
     // console.log(data)
     data = data.answers
     const answers = Object.keys(data).map((key) => {
@@ -48,19 +56,22 @@ export default function view() {
         answer = data[key].value[0]
       }
       return {
-        user_id: authUser.id,
+        user_id: user_id,
         question_id: key,
         answer: answer,
         response_country: location,
       }
     })
     // console.log(questions)
-    const { data: response } = await supabase
+    const { data: response, error } = await supabase
       .from('answers')
       .insert(answers)
       .select()
     console.log(response)
-    Router.push('/dashboard')
+    if (error) {
+      console.log(error)
+    }
+    // Router.push('/dashboard')
   }
 
   const fetchQuestions = async () => {
@@ -83,8 +94,7 @@ export default function view() {
       `
       )
       .eq('id', survey_id)
-    // console.log(survey_id)
-    // console.log(questions)
+
     const blocks = questions[0].questions.map((question) => {
       if (question.question_type === 'short-text') {
         return {
@@ -131,14 +141,7 @@ export default function view() {
 
   return (
     <>
-      {user?.loading ? (
-        <Loading
-          onComplete={() => {
-            setUser({ loading: false })
-          }}
-          isLong={true}
-        />
-      ) : (
+      <PrivateRoute>
         <div style={{ width: '100%', height: '100vh' }}>
           <Form
             formId="1"
@@ -171,15 +174,15 @@ export default function view() {
             }}
           />
         </div>
-      )}
-      {status != '' && (
+      </PrivateRoute>
+      {/* {status != '' && (
         <div className="absolute bottom-4 right-8 rounded-xl bg-indigo-500 p-4 font-semibold text-white">
           <p>
             <FontAwesomeIcon icon={faSpinner} spin /> &nbsp;
             {status}
           </p>
         </div>
-      )}
+      )} */}
     </>
   )
 }

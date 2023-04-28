@@ -19,14 +19,16 @@ import ReactECharts from 'echarts-for-react'
 import * as echarts from 'echarts'
 import { NumberElement } from '@/components/NumberElement'
 import Loading from '@/components/Loading'
+import PrivateRoute from '@/routes/PrivateRoute'
+import { supabase } from '@/helpers/supabase'
 
 export default function dashboard() {
-  const [loading, setLoading] = useState(true)
-  const [animationComplete, setAnimationComplete] = useState(false)
-  const supabase = useSupabaseClient()
-  const user = useUser()
-  const router = useRouter()
-  const session = useSession()
+  // const [loading, setLoading] = useState(true)
+  // const [animationComplete, setAnimationComplete] = useState(false)
+  // const supabase = useSupabaseClient()
+  // const user = useUser()
+  // const router = useRouter()
+  // const session = useSession()
 
   const [totalCreatedSurveys, setTotalCreatedSurveys] = useState(0)
   const [totalResponses, setTotalResponses] = useState(0)
@@ -44,23 +46,35 @@ export default function dashboard() {
   const [positiveData, setPositiveData] = useState([])
   const [negativeData, setNegativeData] = useState([])
 
-  useEffect(() => {
-    privateRoute()
-  }, [session])
+  // useEffect(() => {
+  //   privateRoute()
+  // }, [session])
 
-  const privateRoute = async () => {
-    try {
-      if (session) {
-        await dashboardAnalytics()
-        await positiveLineGraph()
-        await negativeLineGraph()
-      } else {
-        router.push('/login')
-      }
-    } catch (error) {
-    } finally {
-      setLoading(false)
-    }
+  // const privateRoute = async () => {
+  //   try {
+  //     if (session) {
+  //       await dashboardAnalytics()
+  //       await positiveLineGraph()
+  //       await negativeLineGraph()
+  //     } else {
+  //       router.push('/login')
+  //     }
+  //   } catch (error) {
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }
+
+  useEffect(() => {
+    initalFunction()
+  }, [])
+
+  const initalFunction = async () => {
+    dashboardAnalytics().then(() => {
+      positiveLineGraph()
+    }).then(() => {
+      negativeLineGraph()
+    })
   }
 
   const dashboardAnalytics = async () => {
@@ -93,10 +107,10 @@ export default function dashboard() {
           (1 -
             positive.length / responses.length -
             negative.length / responses.length) *
-            100
+          100
         )
       )
-    } catch (error) {}
+    } catch (error) { }
   }
 
   const getDistinctCountries = (data) => {
@@ -227,15 +241,15 @@ export default function dashboard() {
     return data
   }
 
-  if (loading || !animationComplete)
-    return (
-      <Loading
-        onComplete={() => {
-          setAnimationComplete(true)
-        }}
-        isLong={true}
-      />
-    )
+  // if (loading || !animationComplete)
+  //   return (
+  //     <Loading
+  //       onComplete={() => {
+  //         setAnimationComplete(true)
+  //       }}
+  //       isLong={true}
+  //     />
+  //   )
 
   const positiveLineOption = {
     title: {
@@ -426,61 +440,63 @@ export default function dashboard() {
       <Head>
         <title>Dashboard - SURV-A</title>
       </Head>
-      <div className="mx-auto flex max-w-[1290px]">
-        <Header />
-        <main
-          className="mb-2 ml-8 mt-10 flex h-screen w-[82%] text-black"
-          style={{ height: `calc(100vh - 40px)` }}
-        >
-          <div className="grow">
-            <h1 className="ml-2 text-2xl font-bold text-indigo-900">
-              Dashboard
-            </h1>
-            {/* <p className="mt-3 text-2xl">
+      <PrivateRoute>
+        <div className="mx-auto flex max-w-[1290px]">
+          <Header />
+          <main
+            className="mb-2 ml-8 mt-10 flex h-screen w-[82%] text-black"
+            style={{ height: `calc(100vh - 40px)` }}
+          >
+            <div className="grow">
+              <h1 className="ml-2 text-2xl font-bold text-indigo-900">
+                Dashboard
+              </h1>
+              {/* <p className="mt-3 text-2xl">
             Get started by editing{' '}
             <code className="rounded-md bg-gray-100 p-3 font-mono text-lg">
               pages/dashboard.jsx
             </code>
           </p> */}
-            <div className="flex">
-              <NumberElement
-                title="Created Surveys"
-                icon={faFileAlt}
-                count={totalCreatedSurveys}
-              />
-              <NumberElement
-                title="Total Responses"
-                icon={faCommentAlt}
-                count={totalResponses}
-              />
-              <NumberElement
-                title="Filled Surveys"
-                icon={faClipboardCheck}
-                count={surveyFilled}
+              <div className="flex">
+                <NumberElement
+                  title="Created Surveys"
+                  icon={faFileAlt}
+                  count={totalCreatedSurveys}
+                />
+                <NumberElement
+                  title="Total Responses"
+                  icon={faCommentAlt}
+                  count={totalResponses}
+                />
+                <NumberElement
+                  title="Filled Surveys"
+                  icon={faClipboardCheck}
+                  count={surveyFilled}
+                />
+              </div>
+              <h1 className="my-4 ml-4 text-xl font-bold text-indigo-900">
+                Geo Analysis
+              </h1>
+              <ReactECharts option={positiveLineOption} style={{ height: 300 }} />
+              <ReactECharts
+                option={negativeLineOption}
+                style={{ height: 300 }}
+                className="mt-6"
               />
             </div>
-            <h1 className="my-4 ml-4 text-xl font-bold text-indigo-900">
-              Geo Analysis
-            </h1>
-            <ReactECharts option={positiveLineOption} style={{ height: 300 }} />
-            <ReactECharts
-              option={negativeLineOption}
-              style={{ height: 300 }}
-              className="mt-6"
-            />
-          </div>
-          <div className="ml-4 ">
-            <h1 className="ml-8 text-xl font-bold text-indigo-900">
-              Sentiment Analysis
-            </h1>
-            <ReactECharts
-              option={gaugeOptions}
-              style={{ height: 500, width: 400 }}
-            />
-            <ReactECharts option={barChartOptions} style={{ height: 400 }} />
-          </div>
-        </main>
-      </div>
+            <div className="ml-4 ">
+              <h1 className="ml-8 text-xl font-bold text-indigo-900">
+                Sentiment Analysis
+              </h1>
+              <ReactECharts
+                option={gaugeOptions}
+                style={{ height: 500, width: 400 }}
+              />
+              <ReactECharts option={barChartOptions} style={{ height: 400 }} />
+            </div>
+          </main>
+        </div>
+      </PrivateRoute>
     </>
   )
 }

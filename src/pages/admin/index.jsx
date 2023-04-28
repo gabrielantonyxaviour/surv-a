@@ -6,29 +6,35 @@ import * as echarts from 'echarts'
 import timeDifference from '@/utils/timeDifference'
 import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'
 import Loading from '@/components/Loading'
+import { supabase } from '@/helpers/supabase'
+import PrivateRoute from '@/routes/PrivateRoute'
 
 export default function index() {
   const [loading, setLoading] = useState(true)
-  const supabase = useSupabaseClient()
-  const session = useSession()
+  // const supabase = useSupabaseClient()
+  // const session = useSession()
   const [formattedSurveys, setFormattedSurveys] = useState([])
 
-  useEffect(() => {
-    privateRoute()
-  }, [session])
+  // useEffect(() => {
+  //   privateRoute()
+  // }, [session])
 
-  const privateRoute = async () => {
-    try {
-      if (session) {
-        await fetchSurveys()
-      } else {
-        router.push('/login')
-      }
-    } catch (error) {
-    } finally {
-      // setLoading(false)
-    }
-  }
+  // const privateRoute = async () => {
+  //   try {
+  //     if (session) {
+  //       await fetchSurveys()
+  //     } else {
+  //       router.push('/login')
+  //     }
+  //   } catch (error) {
+  //   } finally {
+  //     // setLoading(false)
+  //   }
+  // }
+
+  useEffect(() => {
+    fetchSurveys()
+  }, [])
 
   const fetchSurveys = async () => {
     try {
@@ -56,7 +62,7 @@ export default function index() {
         })
       })
       setFormattedSurveys(formattedSurveys)
-    } catch (error) {}
+    } catch (error) { }
   }
 
   const calculateTotalResponses = (survey) => {
@@ -187,68 +193,70 @@ export default function index() {
     }
   }
 
-  if (loading)
-    return (
-      <Loading
-        onComplete={() => {
-          setLoading(false)
-        }}
-      />
-    )
+  // if (loading)
+  //   return (
+  //     <Loading
+  //       onComplete={() => {
+  //         setLoading(false)
+  //       }}
+  //     />
+  //   )
 
   return (
     <>
       <Head>
         <title>Your Surveys - SURV-A</title>
       </Head>
-      <div className="mx-auto flex max-w-[1290px]">
-        <Header />
-        <main
-          className="mb-2 ml-8 mt-10 flex h-screen w-[82%] text-black"
-          style={{ height: `calc(100vh - 40px)` }}
-        >
-          <div className="grow">
-            <h1 className="ml-2 text-2xl font-bold text-indigo-900">
-              Created Surveys
-            </h1>
-            <div className="mt-6 grid grid-cols-3 gap-5">
-              {formattedSurveys.map((e, index) => {
-                return (
-                  <button
-                    key={index}
-                    className="rounded-xl border-[1px] border-slate-100 bg-white py-4 text-black drop-shadow-xl transition delay-150 duration-300 ease-in-out hover:border-none hover:bg-indigo-500 hover:text-white"
-                    onClick={() => {
-                      window.location = `/admin/${e.id}`
-                    }}
-                  >
-                    <h1 className="px-4 text-lg font-bold">{e.title}</h1>
-                    {/* <div className=" h-[60px] px-4">
+      <PrivateRoute>
+        <div className="mx-auto flex max-w-[1290px]">
+          <Header />
+          <main
+            className="mb-2 ml-8 mt-10 flex h-screen w-[82%] text-black"
+            style={{ height: `calc(100vh - 40px)` }}
+          >
+            <div className="grow">
+              <h1 className="ml-2 text-2xl font-bold text-indigo-900">
+                Created Surveys
+              </h1>
+              <div className="mt-6 grid grid-cols-3 gap-5">
+                {formattedSurveys.map((e, index) => {
+                  return (
+                    <button
+                      key={index}
+                      className="rounded-xl border-[1px] border-slate-100 bg-white py-4 text-black drop-shadow-xl transition delay-150 duration-300 ease-in-out hover:border-none hover:bg-indigo-500 hover:text-white"
+                      onClick={() => {
+                        window.location = `/admin/${e.id}`
+                      }}
+                    >
+                      <h1 className="px-4 text-lg font-bold">{e.title}</h1>
+                      {/* <div className=" h-[60px] px-4">
                       <p className="text-sm font-normal ">{e.description}</p>
                     </div> */}
-                    <p className=" text-center ">
-                      <span className="font-bold">{e.totalResponses}</span>{' '}
-                      Responses
-                    </p>
-                    <ReactECharts
-                      option={getOption(e.positive, e.neutral, e.negative)}
-                      style={{ height: 100 }}
-                      className="mt-6 bg-white"
-                    />
-                    <div className="mt-4 flex justify-around">
-                      <p className="text-xs">Created {e.createdAt}</p>
-                      {/* <p className="text-xs">
+                      <p className=" text-center ">
+                        <span className="font-bold">{e.totalResponses}</span>{' '}
+                        Responses
+                      </p>
+                      <ReactECharts
+                        option={getOption(e.positive, e.neutral, e.negative)}
+                        style={{ height: 100 }}
+                        className="mt-6 bg-white"
+                      />
+                      <div className="mt-4 flex justify-around">
+                        <p className="text-xs">Created {e.createdAt}</p>
+                        {/* <p className="text-xs">
                         Updated {timeDifference(e.updatedAt)}
                       </p> */}
-                    </div>
+                      </div>
 
-                    {/* <div className="h-[1px] border-[1px] border-slate-200"></div> */}
-                  </button>
-                )
-              })}
+                      {/* <div className="h-[1px] border-[1px] border-slate-200"></div> */}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
-          </div>
-        </main>
-      </div>
+          </main>
+        </div>
+      </PrivateRoute>
     </>
   )
 }
