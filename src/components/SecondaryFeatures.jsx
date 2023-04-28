@@ -120,10 +120,10 @@ function Feature({ feature, isActive, className, ...props }) {
       >
         {feature.name}
       </h3>
-      <p className="mt-2 font-display text-xl text-slate-900">
+      <p className="mt-2 font-display text-xl text-slate-300">
         {feature.summary}
       </p>
-      <p className="mt-4 text-sm text-slate-600">{feature.description}</p>
+      <p className="mt-4 text-sm text-slate-400">{feature.description}</p>
     </div>
   )
 }
@@ -134,7 +134,7 @@ function FeaturesMobile() {
       {features.map((feature) => (
         <div key={feature.name}>
           <Feature feature={feature} className="mx-auto max-w-2xl" isActive />
-          <div className="relative mt-10 pb-10">
+          {/* <div className="relative mt-10 pb-10">
             <div className="absolute -inset-x-4 bottom-0 top-8 bg-slate-200 sm:-inset-x-6" />
             <div className="relative mx-auto w-[52.75rem] overflow-hidden rounded-xl bg-white shadow-lg shadow-slate-900/5 ring-1 ring-slate-500/10">
               <Image
@@ -144,7 +144,7 @@ function FeaturesMobile() {
                 sizes="52.75rem"
               />
             </div>
-          </div>
+          </div> */}
         </div>
       ))}
     </div>
@@ -163,7 +163,7 @@ function FeaturesDesktop() {
                 feature={{
                   ...feature,
                   name: (
-                    <Tab className="[&:not(:focus-visible)]:focus:outline-none">
+                    <Tab className="[&:not(:focus-visible)]:focus:outline-none text-white">
                       <span className="absolute inset-0" />
                       {feature.name}
                     </Tab>
@@ -174,7 +174,7 @@ function FeaturesDesktop() {
               />
             ))}
           </Tab.List>
-          <Tab.Panels className="relative mt-20 overflow-hidden rounded-4xl bg-slate-200 px-14 py-16 xl:px-16">
+          {/* <Tab.Panels className="relative mt-20 overflow-hidden rounded-4xl bg-slate-200 px-14 py-16 xl:px-16">
             <div className="-mx-5 flex">
               {features.map((feature, featureIndex) => (
                 <Tab.Panel
@@ -199,7 +199,7 @@ function FeaturesDesktop() {
               ))}
             </div>
             <div className="pointer-events-none absolute inset-0 rounded-4xl ring-1 ring-inset ring-slate-900/10" />
-          </Tab.Panels>
+          </Tab.Panels> */}
         </>
       )}
     </Tab.Group>
@@ -211,15 +211,15 @@ export function SecondaryFeatures() {
     <section
       id="secondary-features"
       aria-label="Features for simplifying everyday business tasks"
-      className="pb-14 pt-20 sm:pb-20 sm:pt-32 lg:pb-32"
+      className="bg-slate-900 pb-14 pt-20 sm:pb-20 sm:pt-32 lg:pb-32"
     >
       <Container>
         <div className="mx-auto max-w-2xl md:text-center">
-          <h2 className="font-display text-3xl tracking-tight text-slate-900 sm:text-4xl">
+          <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl">
             Simplify response analysis without any hassle
             {/* Data analysis made easy ! */}
           </h2>
-          <p className="mt-4 text-lg tracking-tight text-slate-700">
+          <p className="mt-4 text-lg tracking-tight text-slate-400">
             {/* Because categorizing every response with the destined requirements is way too complicated */}
             extract valuable insights and make data-driven decisions in record time effortlessly
           </p>
