@@ -30,6 +30,8 @@ export default function dashboard() {
   // const router = useRouter()
   // const session = useSession()
 
+  const [userId, setUserId] = useState('')
+
   const [totalCreatedSurveys, setTotalCreatedSurveys] = useState(0)
   const [totalResponses, setTotalResponses] = useState(0)
   const [surveyFilled, setSurveyFilled] = useState(1)
@@ -77,34 +79,122 @@ export default function dashboard() {
 
   const dashboardAnalytics = async () => {
     try {
+      const user_id = (await supabase.auth.getUser()).data.user.id;
+      // Get card data for total survey created by user
       const { data: surveys, error: surveysError } = await supabase
         .from('survey')
         .select('id')
+        .eq('user_id', user_id)
       setTotalCreatedSurveys(surveys.length)
+
+
+      // Get card data for total responses for the survey created by user
       const { data: responses, error: responsesError } = await supabase
-        .from('answers')
-        .select('id')
-      setTotalResponses(responses.length)
-      const { data: filledSurvey } = await supabase.from('answers').select()
-      // setSurveyFilled(filledSurvey.length)
+        .from('survey')
+        .select(`
+        id,
+        questions (
+          id,
+          answers (
+            id
+          )
+        )
+        `)
+        .eq('user_id', user_id)
+      let responseCount = 0;
+      responses.map((survey) => {
+        survey.questions.map((question) => {
+          responseCount += question.answers.length
+        })
+      })
+      setTotalResponses(responseCount)
+
+
+      // Get card data for total survey filled by user
+      const { data: filledSurvey } = await supabase
+        .from('survey')
+        .select(`
+        id,
+        questions (
+          id,
+          answers (
+            id,
+            user_id
+          )
+        )`)
+      let filledResponseCount = 0;
+      filledSurvey.map((survey) => {
+        survey.questions.map((question) => {
+          question.answers.map((answer) => {
+            if (answer.user_id === user_id) {
+              filledResponseCount++
+            }
+          })
+        })
+      })
+      setSurveyFilled(filledResponseCount)
+
+
+      // Get data for positive count and positive percent
       const { data: positive, error: positiveError } = await supabase
-        .from('answers')
-        .select()
-        .eq('label', '"POSITIVE"')
-      setPositiveCount(positive.length)
-      setPositivePercent(Math.round((positive.length / responses.length) * 100))
+        .from('survey')
+        .select(`
+      id,
+      questions (
+        id,
+        answers (
+          id,
+          label
+        )
+      )
+      `)
+        .eq('user_id', user_id)
+      let positiveResponseCount = 0;
+      positive.map((survey) => {
+        survey.questions.map((question) => {
+          question.answers.map((answer) => {
+            if (answer.label === '"POSITIVE"') {
+              positiveResponseCount++
+            }
+          })
+        })
+      })
+      // .eq('label', '"POSITIVE"')
+      setPositiveCount(positiveResponseCount)
+      setPositivePercent(Math.round((positiveResponseCount / responseCount) * 100))
+
+
       const { data: negative, error: negativeError } = await supabase
-        .from('answers')
-        .select()
-        .eq('label', '"NEGATIVE"')
-      setNegativeCount(negative.length)
-      setNegativePercent(Math.round((negative.length / responses.length) * 100))
-      setNeutralCount(responses.length - positive.length - negative.length)
+        .from('survey')
+        .select(`
+    id,
+    questions (
+      id,
+      answers (
+        id,
+        label
+      )
+    )
+    `)
+        .eq('user_id', user_id)
+      let negativeResponseCount = 0;
+      positive.map((survey) => {
+        survey.questions.map((question) => {
+          question.answers.map((answer) => {
+            if (answer.label === '"NEGATIVE"') {
+              negativeResponseCount++
+            }
+          })
+        })
+      })
+      setNegativeCount(negativeResponseCount)
+      setNegativePercent(Math.round((negativeResponseCount / responseCount) * 100))
+      setNeutralCount(responseCount - positiveResponseCount - negativeResponseCount)
       setNeutralPercent(
         Math.round(
           (1 -
-            positive.length / responses.length -
-            negative.length / responses.length) *
+            positiveResponseCount / responseCount -
+            negativeResponseCount / responseCount) *
           100
         )
       )
@@ -123,6 +213,7 @@ export default function dashboard() {
 
   const positiveLineGraph = async () => {
     // const { data: countryData, error } = await supabase.rpc('count_answers_by_country_and_label')
+    const user_id = (await supabase.auth.getUser()).data.user.id;
 
     const { data: responses } = await supabase.from('survey').select(`
     id,
@@ -136,9 +227,9 @@ export default function dashboard() {
         response_country
       )
     )
-    `)
+    `).eq('user_id', user_id)
     const lineGraphData = []
-    responses.map((survey) => {
+    responses?.map((survey) => {
       survey.questions.map((question) => {
         question.answers.map((answer) => {
           lineGraphData.push({
@@ -154,6 +245,7 @@ export default function dashboard() {
     })
     const distinctCountries = getDistinctCountries(lineGraphData)
     setCountries(distinctCountries)
+    // console.log(distinctCountries)
     let count = 0
     let data = []
     distinctCountries.map((country) => {
@@ -170,11 +262,13 @@ export default function dashboard() {
       })
       count = 0
     })
+    // console.log(data)
     setPositiveData(data)
   }
 
   const negativeLineGraph = async () => {
     // const { data: countryData, error } = await supabase.rpc('count_answers_by_country_and_label')
+    const user_id = (await supabase.auth.getUser()).data.user.id;
 
     const { data: responses } = await supabase.from('survey').select(`
     id,
@@ -188,9 +282,9 @@ export default function dashboard() {
         response_country
       )
     )
-    `)
+    `).eq('user_id', user_id)
     const lineGraphData = []
-    responses.map((survey) => {
+    responses?.map((survey) => {
       survey.questions.map((question) => {
         question.answers.map((answer) => {
           lineGraphData.push({
@@ -512,7 +606,7 @@ export default function dashboard() {
                   count={totalResponses}
                 />
                 <NumberElement
-                  title="Filled Surveys"
+                  title="Filled Questions"
                   icon={faClipboardCheck}
                   count={surveyFilled}
                 />
