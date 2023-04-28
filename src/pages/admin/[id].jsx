@@ -34,6 +34,26 @@ export default function view() {
     }
   }
 
+  const getDistinctCountries = (data) => {
+    const score = {}
+    data.forEach(({ response_country, label }) => {
+      if (score[response_country]) {
+        if (label == '"POSITIVE"') {
+          score[response_country].postive += 1
+        } else {
+          score[response_country].negative += 1
+        }
+      } else {
+        if (label == '"POSITIVE"') {
+          score[response_country] = { postive: 1, negative: 0 }
+        } else {
+          score[response_country] = { postive: 0, negative: 1 }
+        }
+      }
+    })
+    return score
+  }
+
   const fetchSurvey = async () => {
     const surveyId = window.location.href.split('/')[4]
     setSurveyId(surveyId)
@@ -49,7 +69,26 @@ export default function view() {
       )
       .eq('id', surveyId)
     console.log(survey)
+    // const countries = [{
+    //   India:{positive: 12,negative: 34}
+    // }]
+    // const data = []
+    // survey[0].questions.forEach((question) => {
+    //   const temp = getDistinctCountries(question.answers)
+    //   Object.keys(temp).forEach((country) => {
+    //     data.push({
+    //       value: country[positive],
+    //     itemStyle: {
+    //       color: '#50C878',
+    //     },
+    //     })
+    //   })
+    // })
     setSurvey(survey[0])
+    // {
+    //   india:{positive: 23,negative: 32},
+    //   england:
+    // }
   }
   // "\"POSITIVE\""
   const data = [
