@@ -144,7 +144,7 @@ export default function index() {
   //   },
   // ])
 
-  function getOption(positive, neutral, negative) {
+  function getOption(positive, negative) {
     return {
       tooltip: {
         trigger: 'item',
@@ -163,11 +163,7 @@ export default function index() {
               name: 'Positive',
               itemStyle: { color: '#50C878' },
             },
-            {
-              value: neutral,
-              name: 'Neutral',
-              itemStyle: { color: '#FAC858' },
-            },
+
             {
               value: negative,
               name: 'Negative',
@@ -175,7 +171,7 @@ export default function index() {
             },
             {
               // make an record to fill the bottom 50%
-              value: positive + neutral + negative,
+              value: positive + negative,
               itemStyle: {
                 // stop the chart from rendering this piece
                 color: 'none',
@@ -236,11 +232,18 @@ export default function index() {
                         <span className="font-bold">{e.totalResponses}</span>{' '}
                         Responses
                       </p>
-                      <ReactECharts
-                        option={getOption(e.positive, e.neutral, e.negative)}
-                        style={{ height: 100 }}
-                        className="mt-6 bg-white"
-                      />
+                      {e.totalResponses > 0 ? (
+                        <ReactECharts
+                          option={getOption(e.positive, e.negative)}
+                          style={{ height: 100 }}
+                          className="mt-6 bg-white"
+                        />
+                      ) : (
+                        <div className="mx-auto my-auto flex h-[100px] items-center justify-center text-sm font-semibold ">
+                          <p>No analytics available</p>
+                        </div>
+                      )}
+
                       <div className="mt-4 flex justify-around">
                         <p className="text-xs">Created {e.createdAt}</p>
                         {/* <p className="text-xs">

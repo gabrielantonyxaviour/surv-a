@@ -47,7 +47,7 @@ export default function Header() {
   }
 
   return (
-    <header className="bg-white">
+    <header className="bg-white ">
       <nav
         className={`relative my-4 ml-4 inline-block h-full w-[200px] flex-col items-center justify-between rounded-xl bg-indigo-500 text-white drop-shadow-lg transition duration-150 ease-in-out `}
       >
