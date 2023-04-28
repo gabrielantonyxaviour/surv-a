@@ -3,7 +3,7 @@ import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'
 import Loading from '@/components/Loading'
 import Head from 'next/head'
 import Header from '@/components/app/AppHeader'
-import WordCloud from 'react-d3-cloud';
+import WordCloud from 'react-d3-cloud'
 
 export default function view() {
   // const router = useRouter()
@@ -44,21 +44,51 @@ export default function view() {
         id,
         survey_title,
         created_at,
-        questions (id, question, answers (id, answer, label, score))
+        questions (id, question, answers (id, answer, label, score,response_country))
       `
       )
       .eq('id', surveyId)
     console.log(survey)
-
     setSurvey(survey[0])
   }
-const data = [
-  { text: 'Hey', value: 1000 },
-  { text: 'lol', value: 200 },
-  { text: 'first impression', value: 800 },
-  { text: 'very cool', value: 1000000 },
-  { text: 'duck', value: 10 },
-];
+  // "\"POSITIVE\""
+  const data = [
+    { text: 'Hey', value: 1000 },
+    { text: 'lol', value: 200 },
+    { text: 'first impression', value: 800 },
+    { text: 'very cool', value: 1000 },
+    { text: 'duck', value: 100 },
+    { text: 'Hey', value: 1000 },
+    { text: 'lol', value: 200 },
+    { text: 'first impression', value: 800 },
+    { text: 'very cool', value: 1000 },
+    { text: 'duck', value: 100 },
+    { text: 'Hey', value: 1000 },
+    { text: 'lol', value: 200 },
+    { text: 'first impression', value: 800 },
+    { text: 'very cool', value: 1000 },
+    { text: 'duck', value: 100 },
+    { text: 'Hey', value: 1000 },
+    { text: 'lol', value: 200 },
+    { text: 'first impression', value: 800 },
+    { text: 'very cool', value: 1000 },
+    { text: 'duck', value: 100 },
+    { text: 'Hey', value: 1000 },
+    { text: 'lol', value: 200 },
+    { text: 'first impression', value: 800 },
+    { text: 'very cool', value: 1000 },
+    { text: 'duck', value: 100 },
+    { text: 'Hey', value: 1000 },
+    { text: 'lol', value: 200 },
+    { text: 'first impression', value: 800 },
+    { text: 'very cool', value: 1000 },
+    { text: 'duck', value: 100 },
+    { text: 'Hey', value: 1000 },
+    { text: 'lol', value: 200 },
+    { text: 'first impression', value: 800 },
+    { text: 'very cool', value: 1000 },
+    { text: 'duck', value: 100 },
+  ]
   if (loading)
     return (
       <Loading
@@ -84,9 +114,9 @@ const data = [
               {survey.survey_title}
             </h2>
 
-            <div className="my-4 mr-4 flex h-[400px] flex-col items-center justify-center rounded-xl border-2 bg-white p-6 text-2xl font-bold text-gray-600">
-            <WordCloud data={data} />
-            </div>
+            {/* <div className="my-4 mr-4 flex h-[400px] flex-col items-center justify-center rounded-xl border-2 bg-white p-6 text-2xl font-bold text-gray-600"> */}
+            <WordCloud data={data} height={300} />
+            {/* </div> */}
             <h2 className="ml-2  text-2xl font-bold text-indigo-900">
               Responses
             </h2>
@@ -98,7 +128,7 @@ const data = [
                       <h2 className="ml-2 mt-4 font-semibold">
                         {index + 1 + ' | ' + question.question}
                       </h2>
-                      <div className="grid grid-cols-3 gap-4 mb-4">
+                      <div className="mb-4 grid grid-cols-3 gap-4">
                         {question.answers.map((answer) => {
                           return (
                             <input
