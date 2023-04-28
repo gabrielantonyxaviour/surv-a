@@ -17,6 +17,7 @@ export default function view() {
   const [surveyId, setSurveyId] = useState('')
   const [survey, setSurvey] = useState({})
   const [analytics, setAnalytics] = useState([])
+  const [wordCloudData, setWordCloudData] = useState()
 
   // useEffect(() => {
   //   privateRoute()
@@ -59,10 +60,80 @@ export default function view() {
     return score
   }
 
-  const handleWordClick = (word) => {
-    console.log(`You clicked on the word: ${word.text}`)
+  const handleWordClick = async (e, d) => {
+    // console.log(`onWordClick: ${d.text}`);
+    const clickedWord = d.text
+    // filter only word
+    let originalData = wordCloudData
+    let filteredData = wordCloudData.filter((data) => data.text == clickedWord)
+    // console.log(filteredData)
+    setWordCloudData(filteredData)
+    setTimeout(() => {
+      setWordCloudData(originalData)
+    }, 5000)
+
     // Do something else when a word is clicked
   }
+
+  //   [
+  //     {
+  //         "id": "91db406a-0684-4f62-90d2-9b1f2bfb6846",
+  //         "survey_title": "About India.",
+  //         "created_at": "2023-04-28T19:12:34.404935+00:00",
+  //         "questions": [
+  //             {
+  //                 "id": "651ee392-c4ab-4aff-a5c3-f7202526f91a",
+  //                 "question": "Write about Incredible India.",
+  //                 "answers": [
+  //                     {
+  //                         "id": "696f6aaa-1310-4927-9862-f10234e1c393",
+  //                         "answer": "India is a land of diversity, with a rich cultural heritage that spans over thousands of years. It is a country of vibrant colors, spices, music, and festivals, which contribute to its vivid cultural landscape. The country has a plethora of languages, religions, and customs that make it one of the most diverse nations on earth.",
+  //                         "label": "\"POSITIVE\"",
+  //                         "score": 0.999857187271118,
+  //                         "response_country": "India",
+  //                         "keywords": [
+  //                             "India"
+  //                         ]
+  //                     },
+  //                     {
+  //                         "id": "ea41a9b9-0c18-4fc9-aba5-70914ab969e9",
+  //                         "answer": "India is also known for its natural beauty, with diverse landscapes ranging from the Himalayas in the north to the beaches in the south, and from the deserts of Rajasthan to the lush green forests of Kerala. The country has a rich flora and fauna, including tigers, elephants, lions, and many other exotic animals.",
+  //                         "label": "\"POSITIVE\"",
+  //                         "score": 0.999769985675812,
+  //                         "response_country": "India",
+  //                         "keywords": [
+  //                             "India",
+  //                             "Himalaya",
+  //                             "Rajasthan",
+  //                             "Kerala"
+  //                         ]
+  //                     },
+  //                     {
+  //                         "id": "f4402509-a5e4-488a-b658-fe1790ee202b",
+  //                         "answer": "India faces significant challenges in providing adequate healthcare to its population, including a shortage of healthcare professionals, inadequate infrastructure, and limited access to medical care in rural areas.",
+  //                         "label": "\"NEGATIVE\"",
+  //                         "score": 0.998759746551514,
+  //                         "response_country": "India",
+  //                         "keywords": [
+  //                             "India"
+  //                         ]
+  //                     },
+  //                     {
+  //                         "id": "aa902e10-1179-485f-8a81-5b7eb8bb1f0f",
+  //                         "answer": "Finally, India is renowned for its delicious cuisine, which varies from region to region and reflects the country's diverse culinary traditions. Indian food is known for its bold flavors, spices, and aromas, and is loved by people all around the world.",
+  //                         "label": "\"POSITIVE\"",
+  //                         "score": 0.999880313873291,
+  //                         "response_country": "China",
+  //                         "keywords": [
+  //                             "India"
+  //                         ]
+  //                     }
+  //                 ]
+  //             }
+  //         ]
+  //     }
+  // ]
+
 
   const fetchSurvey = async () => {
     console.log('Fetching....')
@@ -75,10 +146,11 @@ export default function view() {
         id,
         survey_title,
         created_at,
-        questions (id, question, answers (id, answer, label, score,response_country))
+        questions (id, question, answers (id, answer, label, score,response_country , keywords))
       `
       )
       .eq('id', surveyId)
+    // console.log(survey)
     if (survey.length == 0) {
       setSurvey({})
       return
@@ -89,8 +161,34 @@ export default function view() {
       analyticsData.push(temp)
     })
     setSurvey(survey[0])
-    console.log(survey)
+
+    // console.log(survey)
     setAnalytics(analyticsData)
+    const data = []
+    let currentSurvey = survey[0]
+    currentSurvey.questions?.forEach((question) => {
+      question.answers?.forEach((answer) => {
+        answer.keywords?.forEach((keyword) => {
+          data.push({ text: keyword, value: 1000 })
+        })
+      })
+    })
+    // combine value with same text
+    // const combinedData = []
+    // data.forEach((item) => {
+    //   const existing = combinedData.filter((v, i) => {
+    //     return v.text == item.text
+    //   })
+    //   if (existing.length) {
+    //     const existingIndex = combinedData.indexOf(existing[0])
+    //     combinedData[existingIndex].value = combinedData[existingIndex].value + item.value
+    //   } else {
+    //     combinedData.push(item)
+    //   }
+    // })
+    // console.log(combinedData)
+    setWordCloudData(data)
+
     // console.log('Entire Analytics Data: ' + JSON.stringify(analyticsData))
     // console.log('First Analytics Data: ' + JSON.stringify(analyticsData[0]))
     // console.log(
@@ -221,43 +319,45 @@ export default function view() {
     }
   }
 
-  const data = [
-    { text: 'Hey', value: 1000 },
-    { text: 'lol', value: 200 },
-    { text: 'first impression', value: 800 },
-    { text: 'very cool', value: 1000 },
-    { text: 'duck', value: 100 },
-    { text: 'Hey', value: 1000 },
-    { text: 'lol', value: 200 },
-    { text: 'first impression', value: 800 },
-    { text: 'very cool', value: 1000 },
-    { text: 'duck', value: 100 },
-    { text: 'Hey', value: 1000 },
-    { text: 'lol', value: 200 },
-    { text: 'first impression', value: 800 },
-    { text: 'very cool', value: 1000 },
-    { text: 'duck', value: 100 },
-    { text: 'Hey', value: 1000 },
-    { text: 'lol', value: 200 },
-    { text: 'first impression', value: 800 },
-    { text: 'very cool', value: 1000 },
-    { text: 'duck', value: 100 },
-    { text: 'Hey', value: 1000 },
-    { text: 'lol', value: 200 },
-    { text: 'first impression', value: 800 },
-    { text: 'very cool', value: 1000 },
-    { text: 'duck', value: 100 },
-    { text: 'Hey', value: 1000 },
-    { text: 'lol', value: 200 },
-    { text: 'first impression', value: 800 },
-    { text: 'very cool', value: 1000 },
-    { text: 'duck', value: 100 },
-    { text: 'Hey', value: 1000 },
-    { text: 'lol', value: 200 },
-    { text: 'first impression', value: 800 },
-    { text: 'very cool', value: 1000 },
-    { text: 'duck', value: 100 },
-  ]
+
+
+  // const data = [
+  //   { text: 'Hey', value: 1000 },
+  //   { text: 'lol', value: 200 },
+  //   { text: 'first impression', value: 800 },
+  //   { text: 'very cool', value: 1000 },
+  //   { text: 'duck', value: 100 },
+  //   { text: 'Hey', value: 1000 },
+  //   { text: 'lol', value: 200 },
+  //   { text: 'first impression', value: 800 },
+  //   { text: 'very cool', value: 1000 },
+  //   { text: 'duck', value: 100 },
+  //   { text: 'Hey', value: 1000 },
+  //   { text: 'lol', value: 200 },
+  //   { text: 'first impression', value: 800 },
+  //   { text: 'very cool', value: 1000 },
+  //   { text: 'duck', value: 100 },
+  //   { text: 'Hey', value: 1000 },
+  //   { text: 'lol', value: 200 },
+  //   { text: 'first impression', value: 800 },
+  //   { text: 'very cool', value: 1000 },
+  //   { text: 'duck', value: 100 },
+  //   { text: 'Hey', value: 1000 },
+  //   { text: 'lol', value: 200 },
+  //   { text: 'first impression', value: 800 },
+  //   { text: 'very cool', value: 1000 },
+  //   { text: 'duck', value: 100 },
+  //   { text: 'Hey', value: 1000 },
+  //   { text: 'lol', value: 200 },
+  //   { text: 'first impression', value: 800 },
+  //   { text: 'very cool', value: 1000 },
+  //   { text: 'duck', value: 100 },
+  //   { text: 'Hey', value: 1000 },
+  //   { text: 'lol', value: 200 },
+  //   { text: 'first impression', value: 800 },
+  //   { text: 'very cool', value: 1000 },
+  //   { text: 'duck', value: 100 },
+  // ]
   // if (loading)
   //   return (
   //     <Loading
@@ -317,9 +417,9 @@ export default function view() {
               </p>
               <div className="select-none">
                 <WordCloud
-                  data={data}
+                  data={wordCloudData}
                   height={300}
-                  onWordClick={handleWordClick}
+                  onWordClick={(e, d) => handleWordClick(e, d)}
                   onWordMouseOver={() => { }}
                 />
               </div>

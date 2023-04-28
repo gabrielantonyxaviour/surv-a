@@ -349,7 +349,7 @@ export default function dashboard() {
         },
         data: countries.map((country, index) => {
           return {
-            value: positiveData[index].value + negativeData[index].value,
+            value: positiveData[index]?.value + negativeData[index]?.value,
             name: country,
           }
         }),

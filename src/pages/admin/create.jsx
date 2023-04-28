@@ -160,7 +160,7 @@ export default function create() {
               className="mb-2 ml-8 mt-10 flex h-screen w-[82%] text-black"
               style={{ height: `calc(100vh - 40px)` }}
             >
-              (
+
               <div className="grow">
                 <h1 className="ml-2 text-2xl font-bold text-indigo-900">
                   Survey Builder

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useContext, useEffect } from 'react'
-import Router from 'next/router'
+import Router, { useRouter } from 'next/router'
 import { UserContext } from '../../lib/UserContext'
 import Loading from '../../components/Loading'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -25,6 +25,7 @@ export default function view() {
   const [authUser, setAuthUser] = useState()
   // const supaUser = useUser()
   const [location, setLocation] = useState(null)
+  const router = useRouter()
 
   // useEffect(() => {
   //   setStatus('')
@@ -50,7 +51,7 @@ export default function view() {
     data = data.answers
     const answers = Object.keys(data).map((key) => {
       let answer
-      if (data[key].blockName == 'short-text') {
+      if (data[key].blockName == 'short-text' || data[key].blockName == 'long-text') {
         answer = data[key].value
       } else {
         answer = data[key].value[0]
@@ -67,11 +68,12 @@ export default function view() {
       .from('answers')
       .insert(answers)
       .select()
-    console.log(response)
+    // console.log(answers)
     if (error) {
       console.log(error)
     }
-    // Router.push('/dashboard')
+    // setBlocks()
+    router.push('/dashboard')
   }
 
   const fetchQuestions = async () => {
