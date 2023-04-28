@@ -5,7 +5,6 @@ import ReactECharts from 'echarts-for-react'
 import * as echarts from 'echarts'
 import timeDifference from '@/utils/timeDifference'
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
-import Loader from '@/components/Loader'
 import Loading from '@/components/Loading'
 
 export default function index() {
@@ -25,28 +24,26 @@ export default function index() {
           created_at,
           questions ( id, question , answers (id , answer , label , score))
         `)
+      const formattedSurveys = []
       data.forEach((survey) => {
-        setFormattedSurveys(() => [
-          ...formattedSurveys,
-          {
-            id: survey.id,
-            title: survey.survey_title,
-            // description: survey.questions[0].question,
-            totalResponses: calculateTotalResponses(survey),
-            positive: calculatePositiveCount(survey),
-            negative: calculateNegativeCount(survey),
-            neutral:
-              calculateTotalResponses(survey) -
-              calculatePositiveCount(survey) -
-              calculateNegativeCount(survey),
-            createdAt: timeDifference(new Date(survey.created_at)),
-            // updatedAt: timeDifference(new Date(survey.updated_at)),
-          },
-        ])
+        formattedSurveys.push({
+          id: survey.id,
+          title: survey.survey_title,
+          // description: survey.questions[0].question,
+          totalResponses: calculateTotalResponses(survey),
+          positive: calculatePositiveCount(survey),
+          negative: calculateNegativeCount(survey),
+          neutral:
+            calculateTotalResponses(survey) -
+            calculatePositiveCount(survey) -
+            calculateNegativeCount(survey),
+          createdAt: timeDifference(new Date(survey.created_at)),
+          // updatedAt: timeDifference(new Date(survey.updated_at)),
+        })
       })
+      setFormattedSurveys(formattedSurveys)
     } catch (error) {}
   }
-
   const calculateTotalResponses = (survey) => {
     let totalResponses = 0
     survey.questions.forEach((question) => {

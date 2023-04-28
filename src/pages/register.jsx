@@ -12,7 +12,7 @@ import {
   useUser,
   useSession,
 } from '@supabase/auth-helpers-react'
-import Loader from '@/components/Loader'
+import Loading from '@/components/Loading'
 
 export default function Register() {
   const router = useRouter()
@@ -49,7 +49,7 @@ export default function Register() {
     router.push('/login')
   }
 
-  if (loading) return <Loader />
+  if (loading) return <Loading />
 
   return (
     <>

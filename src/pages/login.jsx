@@ -5,12 +5,12 @@ import { useRouter } from 'next/router'
 import backgroundImage from '../images/background-auth.jpg'
 import { useRef, useEffect, useState } from 'react'
 import { Logo } from '@/components/Logo'
-import Loader from '@/components/Loader'
 import {
   useSupabaseClient,
   useUser,
   useSession,
 } from '@supabase/auth-helpers-react'
+import Loading from '@/components/Loading'
 
 export default function Login() {
   const router = useRouter()
@@ -64,7 +64,7 @@ export default function Login() {
     }
   }
 
-  if (loading) return <Loader />
+  if (loading) return <Loading />
 
   return (
     <>

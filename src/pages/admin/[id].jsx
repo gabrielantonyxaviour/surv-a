@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'
-import Loader from '@/components/Loader'
+import Loading from '@/components/Loading'
 
 export default function view() {
-  const router = useRouter()
+  // const router = useRouter()
   const [loading, setLoading] = useState(true)
   const supabase = useSupabaseClient()
   const session = useSession()
@@ -41,11 +41,10 @@ export default function view() {
       `
       )
       .eq('id', surveyId)
-    if (survey.length == 0) setSurvey([])
-    else setSurvey(survey[0])
+    setSurvey(survey[0])
   }
 
-  if (loading) return <Loader />
+  if (loading) return <Loading />
 
   return (
     <div>

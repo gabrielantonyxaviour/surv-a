@@ -3,9 +3,12 @@ import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
 import { faCheck, faRocket, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useSession, useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
-import Loader from '@/components/Loader'
-// import Loading from '@/components/Loading'
+import {
+  useSession,
+  useSupabaseClient,
+  useUser,
+} from '@supabase/auth-helpers-react'
+import Loading from '@/components/Loading'
 
 export default function create() {
   const [title, setTitle] = useState('')
@@ -13,7 +16,7 @@ export default function create() {
   const [loading, setLoading] = useState(true)
   const [currentQuestion, setCurrentQuestion] = useState(null)
   const [viewOptions, setViewOptions] = useState(0)
-  const user = useUser();
+  const user = useUser()
   const session = useSession()
   const supabase = useSupabaseClient()
 
@@ -38,46 +41,52 @@ export default function create() {
 
   const handleClick = async (e) => {
     setLoading(true)
-    let user_id = user.id;
+    let user_id = user.id
+    let surveyId = ''
     // let survey_title = title;
     if (user_id && user_id !== null) {
       const { data: surveyInput } = await supabase
-        .from('survey').insert({
+        .from('survey')
+        .insert({
           user_id,
-          survey_title: title
+          survey_title: title,
         })
         .select()
       // console.log(surveyInput)
       if (surveyInput.length > 0) {
-        let survey = surveyInput[0];
-        let survey_id = survey.id;
+        let survey = surveyInput[0]
+        let survey_id = survey.id
+        surveyId = survey_id
         for (let i = 0; i < questions.length; i++) {
-          let question = questions[i];
-          let question_type = question.name;
-          let question_text = question.value;
-          let question_options = question.options;
+          let question = questions[i]
+          let question_type = question.name
+          let question_text = question.value
+          let question_options = question.options
           const { data: questionInput } = await supabase
             .from('questions')
             .insert({
               survey_id: survey_id,
               question_type: question_type,
               question: question_text,
-            }).select()
-          if (questionInput.length > 0 && question_type == "multiple-choice") {
-            let question_id = questionInput[0].id;
+            })
+            .select()
+          if (questionInput.length > 0 && question_type == 'multiple-choice') {
+            let question_id = questionInput[0].id
             for (let j = 0; j < question_options.length; j++) {
-              let option = question_options[j];
+              let option = question_options[j]
               const { data: optionInput } = await supabase
                 .from('options')
                 .insert({
                   question_id: question_id,
-                  option: option
-                }).select()
+                  option: option,
+                })
+                .select()
             }
           }
         }
       }
     }
+    console.log(`http://localhost:3000/survey/${surveyId}`)
     setLoading(false)
   }
 
@@ -98,7 +107,7 @@ export default function create() {
   //     }
   // ]
 
-  if (loading) return <Loader />
+  if (loading) return <Loading />
 
   return (
     <>
@@ -357,7 +366,7 @@ export default function create() {
             {questions.length > 0 && (
               <div className="flex justify-end">
                 <button
-                  className="rounded-xl bg-[#50C878] p-2 text-xl font-semibold text-white mr-4"
+                  className="mr-4 rounded-xl bg-[#50C878] p-2 text-xl font-semibold text-white"
                   onClick={(e) => {
                     // console.log(questions)
                     // console.log(title)
