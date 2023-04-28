@@ -5,7 +5,6 @@ import ReactECharts from 'echarts-for-react'
 import * as echarts from 'echarts'
 import timeDifference from '@/utils/timeDifference'
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
-import Loader from '@/components/Loader'
 import Loading from '@/components/Loading'
 
 export default function index() {
@@ -43,7 +42,7 @@ export default function index() {
         })
       })
       setFormattedSurveys(formattedSurveys)
-    } catch (error) { }
+    } catch (error) {}
   }
   const calculateTotalResponses = (survey) => {
     let totalResponses = 0

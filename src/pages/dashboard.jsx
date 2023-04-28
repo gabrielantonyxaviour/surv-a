@@ -9,7 +9,6 @@ import {
   useUser,
 } from '@supabase/auth-helpers-react'
 import { useRouter } from 'next/router'
-import Loader from '@/components/Loader'
 import {
   faUser,
   faFileAlt,

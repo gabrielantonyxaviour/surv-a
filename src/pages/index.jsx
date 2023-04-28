@@ -11,9 +11,8 @@ import { PrimaryFeatures } from '@/components/PrimaryFeatures'
 import { SecondaryFeatures } from '@/components/SecondaryFeatures'
 import { Testimonials } from '@/components/Testimonials'
 
-import Loader from '@/components/Loader'
-
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
+import Loading from '@/components/Loading'
 
 export default function Home() {
   const [loading, setLoading] = useState(true)
@@ -31,7 +30,7 @@ export default function Home() {
     }
   }, [user])
 
-  if (loading) return <Loader />
+  if (loading) return <Loading />
 
   return (
     <>
@@ -42,7 +41,7 @@ export default function Home() {
           content="Most bookkeeping software is accurate, but hard to use. We make the opposite trade-off, and hope you don’t get audited."
         />
       </Head>
-      <Header />  
+      <Header />
       <main>
         <Hero />
         {/* <PrimaryFeatures /> */}
