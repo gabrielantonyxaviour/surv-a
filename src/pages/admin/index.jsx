@@ -4,20 +4,32 @@ import React, { useEffect, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
 import * as echarts from 'echarts'
 import timeDifference from '@/utils/timeDifference'
-import { useSupabaseClient } from '@supabase/auth-helpers-react'
+import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'
 import Loader from '@/components/Loader'
+import Loading from '@/components/Loading'
 
 export default function index() {
-
   const [loading, setLoading] = useState(true)
   const supabase = useSupabaseClient()
-  const [formattedSurveys, setFormattedSurveys] = useState([
-
-  ])
+  const session = useSession()
+  const [formattedSurveys, setFormattedSurveys] = useState([])
 
   useEffect(() => {
-    fetchSurveys().finally(() => setLoading(false))
-  }, [])
+    privateRoute()
+  }, [session])
+
+  const privateRoute = async () => {
+    try {
+      if (session) {
+        await fetchSurveys()
+      } else {
+        router.push('/login')
+      }
+    } catch (error) {
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const fetchSurveys = async () => {
     try {
@@ -28,7 +40,6 @@ export default function index() {
           questions ( id, question , answers (id , answer , label , score))
         `)
       data.forEach((survey) => {
-        console.log(timeDifference(new Date(survey.created_at)))
         setFormattedSurveys(() => [
           ...formattedSurveys,
           {
@@ -38,14 +49,16 @@ export default function index() {
             totalResponses: calculateTotalResponses(survey),
             positive: calculatePositiveCount(survey),
             negative: calculateNegativeCount(survey),
-            neutral: calculateTotalResponses(survey) - calculatePositiveCount(survey) - calculateNegativeCount(survey),
+            neutral:
+              calculateTotalResponses(survey) -
+              calculatePositiveCount(survey) -
+              calculateNegativeCount(survey),
             createdAt: timeDifference(new Date(survey.created_at)),
             // updatedAt: timeDifference(new Date(survey.updated_at)),
           },
         ])
       })
-    }
-    catch (error) { }
+    } catch (error) {}
   }
 
   const calculateTotalResponses = (survey) => {
@@ -60,7 +73,7 @@ export default function index() {
     let positive = 0
     survey.questions.forEach((question) => {
       question.answers.forEach((answer) => {
-        if (answer.label == "\"POSITIVE\"") positive++
+        if (answer.label == '"POSITIVE"') positive++
       })
     })
     return positive
@@ -70,7 +83,7 @@ export default function index() {
     let negative = 0
     survey.questions.forEach((question) => {
       question.answers.forEach((answer) => {
-        if (answer.label == "\"NEGATIVE\"") negative++
+        if (answer.label == '"NEGATIVE"') negative++
       })
     })
     return negative
@@ -176,13 +189,12 @@ export default function index() {
     }
   }
 
-
-  if (loading) return <Loader />
+  if (loading) return <Loading />
 
   return (
     <>
       <Head>
-        <title>Your Surveys - TaxPal</title>
+        <title>Your Surveys - SURV-A</title>
       </Head>
       <div className="mx-auto flex max-w-[1290px]">
         <Header />
@@ -218,9 +230,7 @@ export default function index() {
                       className="mt-6 bg-white"
                     />
                     <div className="mt-4 flex justify-around">
-                      <p className="text-xs">
-                        Created {e.createdAt}
-                      </p>
+                      <p className="text-xs">Created {e.createdAt}</p>
                       {/* <p className="text-xs">
                         Updated {timeDifference(e.updatedAt)}
                       </p> */}

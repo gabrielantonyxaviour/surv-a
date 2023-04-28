@@ -3,7 +3,11 @@ import Header from '@/components/app/AppHeader'
 import Head from 'next/head'
 
 import { useState } from 'react'
-import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
+import {
+  useSession,
+  useSupabaseClient,
+  useUser,
+} from '@supabase/auth-helpers-react'
 import { useRouter } from 'next/router'
 import Loader from '@/components/Loader'
 import {
@@ -15,16 +19,20 @@ import {
 import ReactECharts from 'echarts-for-react'
 import * as echarts from 'echarts'
 import { NumberElement } from '@/components/NumberElement'
-
+import Loading from '@/components/Loading'
 
 export default function dashboard() {
   const [loading, setLoading] = useState(true)
+  const [animationComplete, setAnimationComplete] = useState(false)
   const supabase = useSupabaseClient()
   const user = useUser()
   const router = useRouter()
+  const session = useSession()
 
   const [totalCreatedSurveys, setTotalCreatedSurveys] = useState(0)
   const [totalResponses, setTotalResponses] = useState(0)
+  const [surveyFilled, setSurveyFilled] = useState(0)
+
   const [positivePercent, setPositivePercent] = useState(0)
   const [negativePercent, setNegativePercent] = useState(0)
   const [neutralPercent, setNeutralPercent] = useState(0)
@@ -33,18 +41,28 @@ export default function dashboard() {
   const [negativeCount, setNegativeCount] = useState(0)
   const [neutralCount, setNeutralCount] = useState(0)
 
+  const [countries, setCountries] = useState([])
+  const [positiveData, setPositiveData] = useState([])
+  const [negativeData, setNegativeData] = useState([])
+
   useEffect(() => {
+    privateRoute()
+  }, [session])
+
+  const privateRoute = async () => {
     try {
-      if (!user) {
-        router.push('/login')
+      if (session) {
+        await dashboardAnalytics()
+        await positiveLineGraph()
+        await negativeLineGraph()
       } else {
-        dashboardAnalytics()
+        router.push('/login')
       }
-    } catch {
+    } catch (error) {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }
 
   const dashboardAnalytics = async () => {
     try {
@@ -56,23 +74,145 @@ export default function dashboard() {
         .from('answers')
         .select('id')
       setTotalResponses(responses.length)
+      const { data: filledSurvey } = await supabase.from('answers').select()
+      setSurveyFilled(filledSurvey.length)
       const { data: positive, error: positiveError } = await supabase
         .from('answers')
         .select()
-        .eq('label', "\"POSITIVE\"")
+        .eq('label', '"POSITIVE"')
       setPositiveCount(positive.length)
-      setPositivePercent(Math.round(positive.length / responses.length * 100))
+      setPositivePercent(Math.round((positive.length / responses.length) * 100))
       const { data: negative, error: negativeError } = await supabase
         .from('answers')
         .select()
-        .eq('label', "\"NEGATIVE\"")
+        .eq('label', '"NEGATIVE"')
       setNegativeCount(negative.length)
-      setNegativePercent(Math.round(negative.length / responses.length * 100))
+      setNegativePercent(Math.round((negative.length / responses.length) * 100))
       setNeutralCount(responses.length - positive.length - negative.length)
-      setNeutralPercent(Math.round((1 - positive.length / responses.length - negative.length / responses.length) * 100))
-    } catch (error) { }
+      setNeutralPercent(
+        Math.round(
+          (1 -
+            positive.length / responses.length -
+            negative.length / responses.length) *
+            100
+        )
+      )
+    } catch (error) {}
   }
 
+  const getDistinctCountries = (data) => {
+    const countries = new Set()
+    data.forEach((obj) => {
+      if (obj.country) {
+        countries.add(obj.country)
+      }
+    })
+    return Array.from(countries)
+  }
+
+  const positiveLineGraph = async () => {
+    // const { data: countryData, error } = await supabase.rpc('count_answers_by_country_and_label')
+
+    const { data: responses } = await supabase.from('survey').select(`
+    id,
+    questions (
+      id,
+      question, 
+      answers (
+        id,
+        label,
+        created_at,
+        response_country
+      )
+    )
+    `)
+    const lineGraphData = []
+    responses.map((survey) => {
+      survey.questions.map((question) => {
+        question.answers.map((answer) => {
+          lineGraphData.push({
+            survey_id: survey.id,
+            question_id: question.id,
+            answer_id: answer.id,
+            label: answer.label,
+            created_at: answer.created_at,
+            country: answer.response_country,
+          })
+        })
+      })
+    })
+    const distinctCountries = getDistinctCountries(lineGraphData)
+    setCountries(distinctCountries)
+    let count = 0
+    let data = []
+    distinctCountries.map((country) => {
+      lineGraphData.map((obj) => {
+        if (obj.country == country && obj.label == '"POSITIVE"') {
+          count++
+        }
+      })
+      data.push({
+        value: count,
+        itemStyle: {
+          color: '#50C878',
+        },
+      })
+      count = 0
+    })
+    setPositiveData(data)
+  }
+
+  const negativeLineGraph = async () => {
+    // const { data: countryData, error } = await supabase.rpc('count_answers_by_country_and_label')
+
+    const { data: responses } = await supabase.from('survey').select(`
+    id,
+    questions (
+      id,
+      question, 
+      answers (
+        id,
+        label,
+        created_at,
+        response_country
+      )
+    )
+    `)
+    const lineGraphData = []
+    responses.map((survey) => {
+      survey.questions.map((question) => {
+        question.answers.map((answer) => {
+          lineGraphData.push({
+            survey_id: survey.id,
+            question_id: question.id,
+            answer_id: answer.id,
+            label: answer.label,
+            created_at: answer.created_at,
+            country: answer.response_country,
+          })
+        })
+      })
+    })
+    const distinctCountries = getDistinctCountries(lineGraphData)
+    let count = 0
+    let data = []
+    distinctCountries.map((country) => {
+      lineGraphData.map((obj) => {
+        if (obj.country == country && obj.label == '"NEGATIVE"') {
+          count++
+        }
+      })
+      data.push({
+        value: count,
+        itemStyle: {
+          color: '#D22B2B',
+        },
+      })
+      count = 0
+    })
+    // console.log(data)
+    setNegativeData(data)
+  }
 
   function getVirtualData(year) {
     const date = +echarts.time.parse(year + '-01-01')
@@ -88,142 +228,61 @@ export default function dashboard() {
     return data
   }
 
-  if (loading) return <Loader />
+  if (loading || !animationComplete)
+    return (
+      <Loading
+        onComplete={() => {
+          setAnimationComplete(true)
+        }}
+      />
+    )
 
   const positiveLineOption = {
     title: {
       show: true,
-      text: 'Positive Responses',
-      left: '35%',
-    },
-    tooltip: {
-      trigger: 'axis',
-    },
-    legend: {
-      data: ['Portugal', 'India', 'Japan', 'Canada', 'China'],
-      top: '10%',
-    },
-    grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
-      containLabel: true,
-    },
-    toolbox: {
-      feature: {
-        saveAsImage: {},
-      },
+      text: 'Positive Response Count',
+      left: '30%',
     },
     xAxis: {
       type: 'category',
-      boundaryGap: false,
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      data: countries,
     },
     yAxis: {
       type: 'value',
     },
     series: [
       {
-        name: 'Portugal',
-        type: 'line',
-        stack: 'Total',
-        data: [120, 132, 101, 134, 90, 230, 210],
-      },
-      {
-        name: 'India',
-        type: 'line',
-        stack: 'Total',
-        data: [220, 182, 191, 234, 290, 330, 310],
-      },
-      {
-        name: 'Japan',
-        type: 'line',
-        stack: 'Total',
-        data: [150, 232, 201, 154, 190, 330, 410],
-      },
-      {
-        name: 'Canada',
-        type: 'line',
-        stack: 'Total',
-        data: [320, 332, 301, 334, 390, 330, 320],
-      },
-      {
-        name: 'China',
-        type: 'line',
-        stack: 'Total',
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
+        data: positiveData,
+        type: 'bar',
       },
     ],
   }
+
   const negativeLineOption = {
     title: {
       show: true,
-      text: 'Negative Responses',
-      left: '35%',
-    },
-    tooltip: {
-      trigger: 'axis',
-    },
-    legend: {
-      data: ['Portugal', 'India', 'Japan', 'Canada', 'China'],
-      top: '10%',
-    },
-    grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
-      containLabel: true,
-    },
-    toolbox: {
-      feature: {
-        saveAsImage: {},
-      },
+      text: 'Negative Response Count',
+      left: '30%',
     },
     xAxis: {
       type: 'category',
-      boundaryGap: false,
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      data: countries,
     },
     yAxis: {
       type: 'value',
     },
     series: [
       {
-        name: 'Portugal',
-        type: 'line',
-        stack: 'Total',
-        data: [120, 132, 101, 134, 90, 230, 210],
-      },
-      {
-        name: 'India',
-        type: 'line',
-        stack: 'Total',
-        data: [220, 182, 191, 234, 290, 330, 310],
-      },
-      {
-        name: 'Japan',
-        type: 'line',
-        stack: 'Total',
-        data: [150, 232, 201, 154, 190, 330, 410],
-      },
-      {
-        name: 'Canada',
-        type: 'line',
-        stack: 'Total',
-        data: [320, 332, 301, 334, 390, 330, 320],
-      },
-      {
-        name: 'China',
-        type: 'line',
-        stack: 'Total',
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
+        data: negativeData,
+        type: 'bar',
       },
     ],
   }
+
   const barChartOptions = {
     title: {
       show: true,
-      text: 'Response Count',
+      text: 'Total Response Count',
       left: '30%',
     },
     xAxis: {
@@ -259,6 +318,7 @@ export default function dashboard() {
       },
     ],
   }
+
   const gaugeOptions = {
     title: {
       show: true,
@@ -364,7 +424,7 @@ export default function dashboard() {
   return (
     <>
       <Head>
-        <title>Dashboard - TaxPal</title>
+        <title>Dashboard - SURV-A</title>
       </Head>
       <div className="mx-auto flex max-w-[1290px]">
         <Header />
@@ -396,7 +456,7 @@ export default function dashboard() {
               <NumberElement
                 title="Filled Surveys"
                 icon={faClipboardCheck}
-                count={43}
+                count={surveyFilled}
               />
             </div>
             <h1 className="my-4 ml-4 text-xl font-bold text-indigo-900">

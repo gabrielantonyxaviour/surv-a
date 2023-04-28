@@ -1,18 +1,20 @@
-
 import Image from 'next/image'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import backgroundImage from '../images/background-auth.jpg'
-import { useRef, useEffect, useState } from "react"
+import { useRef, useEffect, useState } from 'react'
 import { Logo } from '@/components/Logo'
 
-import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
+import {
+  useSupabaseClient,
+  useUser,
+  useSession,
+} from '@supabase/auth-helpers-react'
 import Loader from '@/components/Loader'
 
 export default function Register() {
-
   const router = useRouter()
   const emailRef = useRef()
   const passwordRef = useRef()
@@ -20,33 +22,39 @@ export default function Register() {
   const [loading, setLoading] = useState(true)
   const supabase = useSupabaseClient()
   const user = useUser()
+  const session = useSession()
 
   useEffect(() => {
+    privateRoute()
+  }, [session])
+
+  const privateRoute = async () => {
     try {
-      if (user) {
+      // console.log(session)
+      if (session) {
         router.push('/dashboard')
       }
-    } catch (error) { } finally {
+    } catch (error) {
+    } finally {
       setLoading(false)
     }
-  }, [user])
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     await supabase.auth.signUp({
       email: emailRef.current.value,
-      password: passwordRef.current.value
+      password: passwordRef.current.value,
     })
     router.push('/login')
   }
 
   if (loading) return <Loader />
 
-
   return (
     <>
       <Head>
-        <title>Sign Up - TaxPal</title>
+        <title>Sign Up - SURV-A</title>
       </Head>
       <div className="flex min-h-full flex-1">
         <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
@@ -55,9 +63,7 @@ export default function Register() {
               <Logo className="h-10 w-auto" />
             </Link>
             <div>
-
               <div className="flex flex-col">
-
                 <div className="mt-20">
                   <h2 className="text-lg font-semibold text-gray-900">
                     Get started for free
@@ -80,7 +86,10 @@ export default function Register() {
               <div>
                 <form action="#" method="POST" className="space-y-6">
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
                       Email address
                     </label>
                     <div className="mt-2">
@@ -96,7 +105,10 @@ export default function Register() {
                   </div>
 
                   <div>
-                    <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                    <label
+                      htmlFor="password"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
                       Password
                     </label>
                     <div className="mt-2">
@@ -133,7 +145,7 @@ export default function Register() {
             unoptimized
           />
         </div>
-      </div >
+      </div>
     </>
   )
 }

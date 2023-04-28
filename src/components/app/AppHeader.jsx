@@ -98,7 +98,7 @@ export default function Header() {
               ))}
               <button
                 onClick={(e) => {
-                  console.log('Logout')
+                  handleClick(e)
                 }}
                 className={`text-sm font-semibold leading-6
                 text-white`}

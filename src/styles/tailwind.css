@@ -5,3 +5,31 @@
 #__next {
   min-height: 100%;
 }
+
+textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+textarea::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background-color: rgb(99 102 241);
+  border-radius: 20px;
+  border: 2px solid #f1f1f1;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(67 56 202);
+}
+
+select::-moz-selection {
+  background-color: rgb(67 56 202);
+  color: white;
+}
+
+select::selection {
+  background-color: rgb(67 56 202);
+  color: white;
+}
