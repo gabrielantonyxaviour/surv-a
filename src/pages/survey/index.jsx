@@ -13,7 +13,7 @@ export default function index() {
   const [formattedSurveys, setFormattedSurveys] = useState([])
 
   useEffect(() => {
-    fetchSurveys().finally(() => setLoading(false))
+    fetchSurveys().finally(() => {})
   }, [])
 
   const fetchSurveys = async () => {
@@ -121,7 +121,14 @@ export default function index() {
     }
   }
 
-  if (loading) return <Loading />
+  if (loading)
+    return (
+      <Loading
+        onComplete={() => {
+          setLoading(false)
+        }}
+      />
+    )
 
   return (
     <>

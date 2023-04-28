@@ -26,7 +26,7 @@ export default function index() {
       }
     } catch (error) {
     } finally {
-      setLoading(false)
+      // setLoading(false)
     }
   }
 
@@ -187,7 +187,14 @@ export default function index() {
     }
   }
 
-  if (loading) return <Loading />
+  if (loading)
+    return (
+      <Loading
+        onComplete={() => {
+          setLoading(false)
+        }}
+      />
+    )
 
   return (
     <>

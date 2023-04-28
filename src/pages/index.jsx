@@ -26,11 +26,11 @@ export default function Home() {
       }
     } catch (error) {
     } finally {
-      setLoading(false)
+      // setLoading(false)
     }
   }, [user])
 
-  if (loading) return <Loading />
+  if (loading) return <Loading onComplete={() => setLoading(false)} />
 
   return (
     <>

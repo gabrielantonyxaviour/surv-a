@@ -36,7 +36,7 @@ export default function Register() {
       }
     } catch (error) {
     } finally {
-      setLoading(false)
+      // setLoading(false)
     }
   }
 
@@ -49,7 +49,14 @@ export default function Register() {
     router.push('/login')
   }
 
-  if (loading) return <Loading />
+  if (loading)
+    return (
+      <Loading
+        onComplete={() => {
+          setLoading(false)
+        }}
+      />
+    )
 
   return (
     <>

@@ -233,6 +233,7 @@ export default function dashboard() {
         onComplete={() => {
           setAnimationComplete(true)
         }}
+        isLong={true}
       />
     )
 

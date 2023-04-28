@@ -35,12 +35,12 @@ export default function create() {
       }
     } catch (error) {
     } finally {
-      setLoading(false)
+      // setLoading(false)
     }
   }
 
   const handleClick = async (e) => {
-    setLoading(true)
+    // setLoading(true)
     let user_id = user.id
     let surveyId = ''
     // let survey_title = title;
@@ -87,7 +87,7 @@ export default function create() {
       }
     }
     console.log(`http://localhost:3000/survey/${surveyId}`)
-    setLoading(false)
+    // setLoading(false)
   }
 
   //   [
@@ -107,7 +107,14 @@ export default function create() {
   //     }
   // ]
 
-  if (loading) return <Loading />
+  if (loading)
+    return (
+      <Loading
+        onComplete={() => {
+          setLoading(true)
+        }}
+      />
+    )
 
   return (
     <>

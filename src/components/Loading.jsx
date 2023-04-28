@@ -1,4 +1,5 @@
 import loading from '../../public/surva.json'
+import loadingShort from '../../public/shortsurva.json'
 import React, { useEffect, useRef } from 'react'
 import lottie from 'lottie-web'
 
@@ -39,8 +40,13 @@ const FullScreenLottie = ({ animationData, onComplete }) => {
   )
 }
 
-const Loading = ({ onComplete }) => {
-  return <FullScreenLottie animationData={loading} onComplete={onComplete} />
+const Loading = ({ onComplete, isLong }) => {
+  return (
+    <FullScreenLottie
+      animationData={isLong ? loading : loadingShort}
+      onComplete={onComplete}
+    />
+  )
 }
 
 export default Loading

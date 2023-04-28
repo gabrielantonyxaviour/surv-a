@@ -34,7 +34,7 @@ export default function Login() {
       }
     } catch (error) {
     } finally {
-      setLoading(false)
+      // setLoading(false)
     }
   }
 
@@ -64,7 +64,14 @@ export default function Login() {
     }
   }
 
-  if (loading) return <Loading />
+  if (loading)
+    return (
+      <Loading
+        onComplete={() => {
+          setLoading(false)
+        }}
+      />
+    )
 
   return (
     <>

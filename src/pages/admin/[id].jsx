@@ -23,7 +23,7 @@ export default function view() {
       }
     } catch (error) {
     } finally {
-      setLoading(false)
+      // setLoading(false)
     }
   }
 
@@ -44,7 +44,14 @@ export default function view() {
     setSurvey(survey[0])
   }
 
-  if (loading) return <Loading />
+  if (loading)
+    return (
+      <Loading
+        onComplete={() => {
+          setLoading(false)
+        }}
+      />
+    )
 
   return (
     <div>
