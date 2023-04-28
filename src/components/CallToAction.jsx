@@ -19,13 +19,12 @@ export function CallToAction() {
         unoptimized
       />
       <Container className="relative">
-        <div className="mx-auto max-w-lg text-center">
-          <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl">
-            Get started today
+        <div className="mx-auto max-w-xl text-center">
+          <h2 className="font-semibold text-3xl tracking-tight text-white sm:text-4xl">
+            Create your own Surv-A now
           </h2>
-          <p className="mt-4 text-lg tracking-tight text-white">
-            It’s time to take control of your books. Buy our software so you can
-            feel like you’re doing something productive.
+          <p className="mt-4 mx-2 text-lg tracking-tight text-white">
+          Get on board with Surv-A and stop struggling with cumbersome data analysis tools.Sign up today to streamline your analysis at your fingertips.
           </p>
           <Button href="/register" color="white" className="mt-10">
             Get 6 months free
