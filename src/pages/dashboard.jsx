@@ -226,48 +226,123 @@ export default function dashboard() {
       />
     )
 
-  const positiveLineOption = {
+  const geobarChartOption = {
     title: {
-      show: true,
-      text: 'Positive Response Count',
-      left: '30%',
+      text: 'Sentiment Comparison',
+      left: 30,
     },
-    xAxis: {
-      type: 'category',
-      data: countries,
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'cross',
+        crossStyle: {
+          color: '#999',
+        },
+      },
     },
-    yAxis: {
-      type: 'value',
+    toolbox: {
+      feature: {
+        dataView: { show: true, readOnly: false },
+        magicType: { show: true, type: ['line', 'bar'] },
+        restore: { show: true },
+        saveAsImage: { show: true },
+      },
     },
+    legend: {
+      bottom: 10,
+      data: [
+        { name: 'Positive', itemStyle: { color: '#50C878' } },
+        { name: 'Negative', itemStyle: { color: '#D22B2B' } },
+      ],
+    },
+    xAxis: [
+      {
+        type: 'category',
+        data: countries,
+        axisPointer: {
+          type: 'shadow',
+        },
+      },
+    ],
+    yAxis: [
+      {
+        type: 'value',
+        name: 'Surveys',
+        min: 0,
+        max: 10,
+        interval: 2,
+      },
+    ],
     series: [
       {
+        name: 'Positive',
+        type: 'bar',
+        tooltip: {
+          valueFormatter: function (value) {
+            return value
+          },
+        },
         data: positiveData,
+      },
+      {
+        name: 'Negative',
         type: 'bar',
+        tooltip: {
+          valueFormatter: function (value) {
+            return value
+          },
+        },
+        data: negativeData,
       },
     ],
   }
 
-  const negativeLineOption = {
+  const nightingaleOption = {
     title: {
+      text: 'Volume Comparison',
+      left: 30,
+    },
+    legend: {
+      top: 'bottom',
+    },
+    toolbox: {
       show: true,
-      text: 'Negative Response Count',
-      left: '30%',
-    },
-    xAxis: {
-      type: 'category',
-      data: countries,
-    },
-    yAxis: {
-      type: 'value',
+      feature: {
+        mark: { show: true },
+        dataView: { show: true, readOnly: false },
+        restore: { show: true },
+        saveAsImage: { show: true },
+      },
     },
     series: [
       {
-        data: negativeData,
-        type: 'bar',
+        name: 'Nightingale Chart',
+        type: 'pie',
+        radius: [50, 250],
+        center: ['50%', '50%'],
+        roseType: 'area',
+        itemStyle: {
+          borderRadius: 8,
+        },
+        data: countries.map((country, index) => {
+          return {
+            value: positiveData[index].value + negativeData[index].value,
+            name: country,
+          }
+        }),
+        // [
+        //   { value: 40, name: 'rose 1' },
+        //   { value: 38, name: 'rose 2' },
+        //   { value: 32, name: 'rose 3' },
+        //   { value: 30, name: 'rose 4' },
+        //   { value: 28, name: 'rose 5' },
+        //   { value: 26, name: 'rose 6' },
+        //   { value: 22, name: 'rose 7' },
+        //   { value: 18, name: 'rose 8' }
+        // ]
       },
     ],
   }
-
   const barChartOptions = {
     title: {
       show: true,
@@ -380,19 +455,6 @@ export default function dashboard() {
     ],
   }
 
-  // Total surveys created - Number
-  // Total surveys filled - Number
-  // Total responses for surveys - Number
-  // Net sentiment for all surveys - Radar custom (positive, negative, more?)
-  // Geographical - Map with pie
-  // Bar chart for survey and response count
-  //
-
-  // On Right
-  // Top Calender, Notifications, Messages and PFP
-  // Your current Plan - If Basic Get Premium Now or else show Premium
-  // Current Surveys List 4 and bottom more
-
   return (
     <>
       <Head>
@@ -401,7 +463,7 @@ export default function dashboard() {
       <div className="mx-auto flex max-w-[1290px]">
         <Header />
         <main
-          className="mb-2 ml-8 mt-10 flex h-screen w-[82%] text-black"
+          className="mb-6 ml-8 mt-10 flex min-h-full w-[82%] text-black"
           style={{ height: `calc(100vh - 40px)` }}
         >
           <div className="grow">
@@ -434,14 +496,14 @@ export default function dashboard() {
             <h1 className="my-4 ml-4 text-xl font-bold text-indigo-900">
               Geo Analysis
             </h1>
-            <ReactECharts option={positiveLineOption} style={{ height: 300 }} />
+            <ReactECharts option={geobarChartOption} style={{ height: 300 }} />
             <ReactECharts
-              option={negativeLineOption}
-              style={{ height: 300 }}
+              option={nightingaleOption}
+              style={{ height: 600 }}
               className="mt-6"
             />
           </div>
-          <div className="ml-4 ">
+          <div className="ml-4">
             <h1 className="ml-8 text-xl font-bold text-indigo-900">
               Sentiment Analysis
             </h1>
