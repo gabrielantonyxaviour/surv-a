@@ -33,7 +33,6 @@ const navigation = [
   { name: 'View Survey', href: '/admin', icon: faEye },
   { name: 'Create Survey', href: '/admin/create', icon: faFileAlt },
   { name: 'Filled Survey', href: '/survey', icon: faClipboardCheck },
-  { name: 'Your Profile', href: '/profile', icon: faUser },
   // { name: 'Company', href: '#' },
 ]
 

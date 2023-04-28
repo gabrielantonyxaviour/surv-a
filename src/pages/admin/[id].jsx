@@ -54,6 +54,11 @@ export default function view() {
     return score
   }
 
+  const handleWordClick = (word) => {
+    console.log(`You clicked on the word: ${word.text}`)
+    // Do something else when a word is clicked
+  }
+
   const fetchSurvey = async () => {
     const surveyId = window.location.href.split('/')[4]
     setSurveyId(surveyId)
@@ -154,7 +159,7 @@ export default function view() {
             </h2>
 
             {/* <div className="my-4 mr-4 flex h-[400px] flex-col items-center justify-center rounded-xl border-2 bg-white p-6 text-2xl font-bold text-gray-600"> */}
-            <WordCloud data={data} height={300} />
+            <WordCloud data={data} height={300} onWordClick={handleWordClick} />
             {/* </div> */}
             <h2 className="ml-2  text-2xl font-bold text-indigo-900">
               Responses
@@ -168,16 +173,22 @@ export default function view() {
                         {index + 1 + ' | ' + question.question}
                       </h2>
                       <div className="mb-4 grid grid-cols-3 gap-4">
-                        {question.answers.map((answer) => {
-                          return (
-                            <input
-                              type="text"
-                              className="mt-2 rounded-xl bg-indigo-700 px-4 py-2 text-white"
-                              value={answer.answer}
-                              disabled
-                            />
-                          )
-                        })}
+                        {question.answers.length > 0 ? (
+                          question.answers.map((answer) => {
+                            return (
+                              <input
+                                type="text"
+                                className="mt-2 rounded-xl bg-indigo-700 px-4 py-2 text-white"
+                                value={answer.answer}
+                                disabled
+                              />
+                            )
+                          })
+                        ) : (
+                          <div className="text-md ml-6 mt-2 font-semibold text-white">
+                            No responses yet
+                          </div>
+                        )}
                       </div>
                     </div>
                   </>
