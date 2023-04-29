@@ -606,7 +606,7 @@ export default function dashboard() {
                   count={totalResponses}
                 />
                 <NumberElement
-                  title="Filled Questions"
+                  title="Filled Responses"
                   icon={faClipboardCheck}
                   count={surveyFilled}
                 />

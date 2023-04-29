@@ -85,18 +85,20 @@ export default function Login() {
           <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
             <div className="mx-auto w-full max-w-sm lg:w-96">
               <Link href="/" aria-label="Home">
-                <Logo className="h-10 w-auto" />
-              </Link>
+                <div className='flex'>
+                  <img src="/openai.svg" width={40} height={40} />
+                  <p className='ml-2 my-auto font-semibold text-lg'>SURV-A</p>
+                </div>              </Link>
               <div>
                 <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900">
                   Sign in to your account
                 </h2>
-                <p className="mt-2 text-sm leading-6 text-gray-500">
+                {/* <p className="mt-2 text-sm leading-6 text-gray-500">
                   Not a member?{' '}
                   <button className="font-semibold text-indigo-600 hover:text-indigo-500">
                     <Link href="/register">Start a 14 day free trial</Link>
                   </button>
-                </p>
+                </p> */}
               </div>
 
               <div className="mt-10">

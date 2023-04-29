@@ -70,8 +70,10 @@ export default function Register() {
           <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
             <div className="mx-auto w-full max-w-sm lg:w-96">
               <Link href="/" aria-label="Home">
-                <Logo className="h-10 w-auto" />
-              </Link>
+                <div className='flex'>
+                  <img src="/openai.svg" width={40} height={40} />
+                  <p className='ml-2 my-auto font-semibold text-lg'>SURV-A</p>
+                </div>                            </Link>
               <div>
                 <div className="flex flex-col">
                   <div className="mt-20">

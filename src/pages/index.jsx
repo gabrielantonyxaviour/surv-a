@@ -35,11 +35,11 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>SURV-A - Accounting made simple for small businesses</title>
-        <meta
+        <title>SURV-A | Your Survey's Digital Oracle</title>
+        {/* <meta
           name="description"
           content="Most bookkeeping software is accurate, but hard to use. We make the opposite trade-off, and hope you don’t get audited."
-        />
+        /> */}
       </Head>
       <Header />
       <main>
